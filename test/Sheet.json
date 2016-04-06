@@ -1,0 +1,16 @@
+[
+{"id":1,"name":["李大\n锤","李大锤,"],"color":[0,1,1],"moveType":true,"camPos":[0,1.4,1.7,0],"rewards":[[1001,2],[1002,3],[1003,9]],"headIcon":"icon/1.png"},
+{"id":2,"name":["<a>土地公</a>","&土地公'"],"color":[2,3,3],"moveType":true,"camPos":[0,1.4,1.7,0],"rewards":[[1001,2],[1002,3],[1003,11]],"headIcon":"icon/3.png"},
+{"id":3,"name":["游方老道","游方老道"],"color":[3,4,4],"moveType":true,"camPos":[0,1.4,1.6,0],"rewards":[[1001,2],[1002,3],[1003,18]],"headIcon":"icon/10.png"},
+{"id":4,"name":["\"阿牛\"","阿\t牛"],"color":[4,5,5],"moveType":false,"camPos":[0,1.4,1.6,0],"rewards":[[1001,2],[1002,3],[1003,19]],"headIcon":"icon/11.png"},
+{"id":5,"name":["玄坤子","玄坤子"],"color":[5,6,6],"moveType":true,"camPos":[0,1.4,1.6,0],"rewards":[[1001,2],[1002,3],[1003,20]],"headIcon":"icon/12.png"},
+{"id":6,"name":["玄明子","玄明子"],"color":[6,7,7],"moveType":false,"camPos":[0,1.4,1.6,0],"rewards":[[1001,2],[1002,3],[1003,21]],"headIcon":""},
+{"id":0,"name":["这是脏数据,有warning",""],"color":[0,0,0],"moveType":false,"camPos":[0],"rewards":[[0]],"headIcon":""},
+{"id":7,"name":["李大\n锤","李大锤,"],"color":[0,1,1],"moveType":true,"camPos":[0,1.4,1.7,0],"rewards":[[1001,2],[1002,3],[1003,9]],"headIcon":"icon/1.png"},
+{"id":8,"name":["<a>土地公</a>","&土地公'"],"color":[2,3,3],"moveType":true,"camPos":[0,1.4,1.7,0],"rewards":[[1001,2],[1002,3],[1003,11]],"headIcon":"icon/3.png"},
+{"id":9,"name":["游方老道","游方老道"],"color":[3,4,4],"moveType":true,"camPos":[0,1.4,1.6,0],"rewards":[[1001,2],[1002,3],[1003,18]],"headIcon":"icon/10.png"},
+{"id":10,"name":["\"阿牛\"","阿\t牛"],"color":[4,5,5],"moveType":false,"camPos":[0,1.4,1.6,0],"rewards":[[1001,2],[1002,3],[1003,19]],"headIcon":"icon/11.png"},
+{"id":11,"name":["玄坤子","玄坤子"],"color":[5,6,6],"moveType":true,"camPos":[0,1.4,1.6,0],"rewards":[[1001,2],[1002,3],[1003,20]],"headIcon":"icon/12.png"},
+{"id":12,"name":["玄明子","玄明子"],"color":[6,7,7],"moveType":false,"camPos":[0,1.4,1.6,0],"rewards":[[1001,2],[1002,3],[1003,21]],"headIcon":""},
+{"id":0,"name":["这是脏数据,有warning",""],"color":[0,0,0],"moveType":false,"camPos":[0],"rewards":[[0]],"headIcon":""},
+]

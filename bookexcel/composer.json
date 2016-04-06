@@ -1,0 +1,12 @@
+{
+    "require":
+    {
+        "nuovo/spreadsheet-reader": "0.5.*"
+    },
+    "repositories": {
+        "packagist": {
+            "type": "composer",
+            "url": "https://packagist.phpcomposer.com"
+        }
+    }
+}
