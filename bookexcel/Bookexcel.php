@@ -388,17 +388,39 @@ class Bookexcel
 
     private function getAbsolutePath($path, $relativePath = null)
     {
-        //当前pwd或本文件的父目录作为相对目录的起点
-        $dir = getcwd();
-        if ($dir === false) {
-            $dir = dirname(__DIR__);
-        }
-
         if (strpos($path, '/') !== 0 && !preg_match('/^[a-zA-Z]:/', $path)) {
-            $path = ($relativePath ? $relativePath : $dir) . '/' . $path;
+            //当前pwd或本文件的父目录作为相对目录的起点
+            if ($relativePath == null && ($relativePath = getcwd()) === false) {
+                $relativePath = dirname(__DIR__);
+            }
+
+            $path = $relativePath . '/' . $path;
         }
 
-        return $this->unifyDirDelimiter($path);
+        $path = str_replace("\\", "/", $path);
+        $path = str_replace("//", "/", $path);
+
+        if (strpos($path, './') !== false) {
+
+            $arr = explode('/', $path);
+            for ($i = 0; $i < count($arr); $i++) {
+                if ($arr[$i] == '..') {
+                    if ($i > 1) {
+                        array_splice($arr, $i - 1, 2);
+                        $i -= 2;
+                    } else {
+                        array_splice($arr, $i, 1);
+                        $i--;
+                    }
+                } else if ($arr[$i] == '.') {
+                    array_splice($arr, $i, 1);
+                    $i--;
+                }
+            }
+            $path = implode($arr, '/');
+        }
+
+        return $path;
     }
 
     //XLSX XLS ODS

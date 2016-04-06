@@ -5,10 +5,12 @@ Mostly use in game.
 
 # Feture
 
-* Works in Windows,Linux and Mac OX S
+* Works on Windows,Linux and Mac OX S
 * Support `.xls .xlsx and .ods` format
 * Batch works
 * Filter by: `file name,sheet name,column,row`
+* Support merge sheets and columns
+* Export for client or server individual
 * Easy to extend your own export format and parse code
 
 # How to use
@@ -16,16 +18,16 @@ Mostly use in game.
 1. Install php and make sure php in `PATH`
 2. Edit `bookexcel.php`, add base params, for example:
 
-			$params['inputPath'] = 'excelDir';
-			$params['outputPath'] = 'excelExports';
-			$params['codeType'] = 'C#';
-			$params['codeSavePath'] = 'src';
-			$bk = new Bookexcel();
-			$bk->parseExcels($params);
+		$params['inputPath'] = 'excelDir';
+		$params['outputPath'] = 'excelExports';
+		$params['codeType'] = 'C#';
+		$params['codeSavePath'] = 'src';
+		$bk = new Bookexcel();
+		$bk->parseExcels($params);
 
 3. Run command:
 
-			php bookexcel.php
+		php bookexcel.php
 
 	For Windows, you can also put php in `runtime` dir and run `bookexcel.bat`.
 
