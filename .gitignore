@@ -1,6 +1,5 @@
 
 test/*.json
-test/*.json
 
 .DS_Store
 .AppleDouble
