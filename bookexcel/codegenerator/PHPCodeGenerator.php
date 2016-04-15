@@ -8,7 +8,7 @@
 /**
  * PHPCodeGenerator
  */
-class PHPCodeGenerator implements ICodeGenerator
+class PHPCodeGenerator extends CodeGeneratorBase
 {
     public function generate(array $params)
     {

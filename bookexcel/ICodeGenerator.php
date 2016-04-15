@@ -14,4 +14,8 @@ interface ICodeGenerator
      * @return [type]         string
      */
     public function generate(array $params);
+
+    public function start();
+
+    public function end();
 }

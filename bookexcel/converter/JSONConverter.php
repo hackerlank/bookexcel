@@ -7,14 +7,17 @@
 
 class JSONConverter implements IConverter
 {
+    private $isFirst = false;
+
     public function convertHeader(array $params)
     {
+        $this->isFirst = true;
         return "[" . $params['convertParams']['endOfLine'];
     }
 
     public function convertFooter(array $params)
     {
-        return "]";
+        return $params['convertParams']['endOfLine'] . "]";
     }
 
     public function convertItem(array $params)
@@ -55,7 +58,15 @@ class JSONConverter implements IConverter
         }
 
         $result = json_encode($arr, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-        return str_replace("\\\\", "\\", $result) . ',' . $convertParams['endOfLine'];
+        $result = str_replace("\\\\", "\\", $result);
+
+        if ($this->isFirst) {
+            $this->isFirst = false;
+        } else {
+            $result = ',' . $convertParams['endOfLine'] . $result;
+        }
+
+        return $result;
     }
 
     private function getval($type, $value)

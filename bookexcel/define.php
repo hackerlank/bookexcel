@@ -19,3 +19,5 @@ const TYPE_STRING = 'string';
 const TYPE_FLOAT = 'float';
 const TYPE_DOUBLE = 'double';
 const TYPE_ARRAY = '[]';
+
+const HISTORY_DIR = APP_ROOT . '/../history/';

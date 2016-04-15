@@ -85,6 +85,7 @@ class ExcelParser
         $this->nameRow = array();
         $this->typeRow = array();
         $this->descRow = array();
+        $this->sheetName = $this->findSheetName($index);
 
         $reader = $this->reader;
         $reader->ChangeSheet($index);
@@ -190,6 +191,19 @@ class ExcelParser
             'dataRow' => $dataRow,
             'descRow' => $this->descRow,
         );
+    }
+
+    private function findSheetName($sheetIndex)
+    {
+        foreach ($this->sheets as $key => $val) {
+            foreach ($val as $v) {
+                if ($v['orgIndex'] == $sheetIndex) {
+                    return $v['mergeSheetName'];
+                }
+            }
+        }
+
+        return '';
     }
 
     private function mergeHeadColumn()

@@ -11,9 +11,13 @@ return array(
     "outputPath" => "excelExports", //默认在原目录下新建此文件夹
     "exportFormat" => "json", //导出格式：txt、csv、xml、json
     "exportTag" => "", //c(该行/列为服务端特有)、s(该行/列为客户端特有)，留空则全部导出，可以自定义
-    "codeType" => "", //生成解析代码：php、c#，留空不生成解析代码
+
+    //生成解析代码的参数
+    "codeType" => "", //生成解析代码类型：php、c#，留空不生成解析代码
     "codeSavePath" => "", //解析代码存放路径
     "package" => "", //解析代码所在的包
+    "codeSuffix" => "", //解析代码的后缀
+    "genPackageDir" => true, //根据包名创建目录
 
     //不常用参数
     "excludes" => array(), //排除列表,支持通配符，如array('dir/no.xlsx', 'dir/tmp*.xlsx')

@@ -12,6 +12,9 @@ require_once APP_ROOT . 'ExcelParser.php';
 require_once APP_ROOT . 'define.php';
 require_once APP_ROOT . 'IConverter.php';
 require_once APP_ROOT . 'ICodeGenerator.php';
+require_once APP_ROOT . 'Util.php';
+require_once APP_ROOT . 'TplEngine.php';
+require_once APP_ROOT . 'codegenerator/CodeGeneratorBase.php';
 
 autoload(APP_ROOT . 'converter');
 autoload(APP_ROOT . 'codegenerator');
@@ -60,6 +63,7 @@ class Bookexcel
 
         $this->codeGenerator = array(
             'php' => new PHPCodeGenerator(),
+            'C#' => new CSharpCodeGenerator(),
         );
     }
 
@@ -97,11 +101,11 @@ class Bookexcel
         }
 
         $this->params = $params;
-        $path = $this->getAbsolutePath($params['inputPath']);
+        $path = Util::getAbsolutePath($params['inputPath']);
         $excludes = $params['excludes'];
 
         if ($params['outputPath'] != '') {
-            $this->fileSavePath = $this->getAbsolutePath(
+            $this->fileSavePath = Util::getAbsolutePath(
                 $params['outputPath'],
                 is_dir($path) ? $path : dirname($path)
             );
@@ -124,7 +128,7 @@ class Bookexcel
 
         try {
             if (is_dir($path)) {
-                $dir = $this->addDirDelimiter($path);
+                $dir = Util::addDirSeparator($path);
                 $needCheckExt = true;
                 $files = scandir($path);
             } else {
@@ -145,7 +149,7 @@ class Bookexcel
 
                 if (is_file($filename) &&
                     !$this->isIgnoreFile($basename) &&
-                    !$this->isExclude($filename, $excludes) &&
+                    !Util::isExclude($filename, $excludes) &&
                     (($needCheckExt && $this->isExcelExt($basename)) || !$needCheckExt)) {
 
                     $excelCount++;
@@ -205,7 +209,7 @@ class Bookexcel
 
                 $fileSavePath = $this->fileSavePath == '' ?
                 dirname($filename) : $this->fileSavePath;
-                $fileSavePath = $this->addDirDelimiter($fileSavePath) .
+                $fileSavePath = Util::addDirSeparator($fileSavePath) .
                     $mergeSheetName . '.' . $extension;
 
                 $emptyRowCount = 0;
@@ -285,8 +289,9 @@ class Bookexcel
                 $this->sheetNames[$mergeSheetName] = $basename;
 
                 //生成解析代码
-                if ($codeType != '' && !empty($this->nameRow) &&
+                if ($codeType != '' && !empty($excel->nameRow) &&
                     !empty($this->codeGenerator[$codeType])) {
+                    
                     $codeGenerator = $this->codeGenerator[$codeType];
                     $codeGenerator->generate($excel->createParams());
                 }
@@ -356,72 +361,6 @@ class Bookexcel
         return $str;
     }
 
-    private function isExclude($filename, $excludes)
-    {
-        foreach ($excludes as $pattern) {
-            if (fnmatch($this->getAbsolutePath($pattern), $filename)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private function unifyDirDelimiter($path)
-    {
-        if (empty($path)) {
-            return $path;
-        }
-        return str_replace("\\", "/", $path);
-    }
-
-    private function addDirDelimiter($path)
-    {
-        if (empty($path)) {
-            return $path;
-        }
-        if (!preg_match('/\/$/', $path)) {
-            $path .= '/';
-        }
-        return $path;
-    }
-
-    private function getAbsolutePath($path, $relativePath = null)
-    {
-        if (strpos($path, '/') !== 0 && !preg_match('/^[a-zA-Z]:/', $path)) {
-            //当前pwd或本文件的父目录作为相对目录的起点
-            if ($relativePath == null && ($relativePath = getcwd()) === false) {
-                $relativePath = dirname(__DIR__);
-            }
-
-            $path = $relativePath . '/' . $path;
-        }
-
-        $path = str_replace("\\", "/", $path);
-        $path = str_replace("//", "/", $path);
-
-        if (strpos($path, './') !== false) {
-
-            $arr = explode('/', $path);
-            for ($i = 0; $i < count($arr); $i++) {
-                if ($arr[$i] == '..') {
-                    if ($i > 1) {
-                        array_splice($arr, $i - 1, 2);
-                        $i -= 2;
-                    } else {
-                        array_splice($arr, $i, 1);
-                        $i--;
-                    }
-                } else if ($arr[$i] == '.') {
-                    array_splice($arr, $i, 1);
-                    $i--;
-                }
-            }
-            $path = implode($arr, '/');
-        }
-
-        return $path;
-    }
 
     //XLSX XLS ODS
     private function isExcelExt($filename)
