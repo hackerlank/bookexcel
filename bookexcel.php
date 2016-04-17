@@ -34,16 +34,16 @@ $params = array(
 
 $params['inputPath'] = 'test';
 $params['outputPath'] = '';
-$params['exportFormat'] = 'txt';
+$params['exportFormat'] = 'xml';
 $params['codeType'] = 'C#';
 $params['codeSuffix'] = 'Cfg';
 $params['codeSavePath'] = '';
 $bk = new Bookexcel();
-$bk->parseExcels($params);
+$bk->convertExcels($params);
 
 //
 //add more worker
 //
 // $params['inputPath'] = 'xxx';
 // $params['outputPath'] = 'xxx';
-// $bk->parseExcels($params);
+// $bk->convertExcels($params);

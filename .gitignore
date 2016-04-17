@@ -4,6 +4,8 @@ ts.php
 
 .idea
 
+bookexcel/cache
+
 .DS_Store
 .AppleDouble
 .LSOverride

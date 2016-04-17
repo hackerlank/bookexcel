@@ -15,7 +15,7 @@ interface ICodeGenerator
      */
     public function generate(array $params);
 
-    public function start();
+    public function start(array $params);
 
-    public function end();
+    public function end(array $params);
 }

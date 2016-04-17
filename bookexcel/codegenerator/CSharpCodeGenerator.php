@@ -26,16 +26,7 @@ class CSharpCodeGenerator extends CodeGeneratorBase
     	$this->templateDir = APP_ROOT . 'template/C#/';
     	$this->defaultParentClass = 'bookrpg.config.ConfigItemBase';
     	$this->defaultmanagerParentClass = 'bookrpg.config.ConfigMgrSingleKey';
-    }
-
-    public function generate(array $params)
-    {
-    	$this->params = $params;
-        Util::restWarningError();
-
-        $this->updateSheet();
-        $this->createClass('class');
-        // $this->createClass('parentClass');
+        $this->createTwoClass = false;
     }
 
     protected function convertType($type)

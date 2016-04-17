@@ -15,45 +15,61 @@ class CodeGeneratorBase implements ICodeGenerator
     protected $defaultParentClass = 'defaultParentClass';
     protected $defaultmanagerParentClass = 'defaultmanagerParentClass';
 
+    /**
+     * create two class for one sheet, you cannot modify parent class, because
+     * it is updated by CodeGenerator, but you can modify child class.
+     */
+    protected $createTwoClass = true;
+    protected $twoClassSuffix = 'PT';
+
     private $prjFile;
 
-    //{
-    // "package" : "bookrpg.cfg",
-    // "codeSuffix" : "Cfg",
-    // "time": "",
-    // "sheets": {
-    //     "Sheet": {
-    //         "package" : "bookrpg.cfg",
-    //         "className": "Sheet",
-    //         "classNameSuffix" : "Cfg",
-    //         "parentClass": "bookrpg.config.ConfigItemBase" ,
-    //         "managerParentClass": "bookrpg.config.ConfigMgrSingleKey",
-    //         "fields": {
-    //             "id": {"name": "ID", "isPrimaryKey": true, "createQuery": false},
-    //             "name": {"name": "name", "isPrimaryKey": false, "createQuery": true},
-    //             "color": {"name": "color", "isPrimaryKey": false, "createQuery": false},
-    //         }
-    //     }
-    // }
-    //}
+    /**{
+     * "package" : "bookrpg.cfg",
+     * "codeSuffix" : "Cfg",
+     * "time": "",
+     * "sheets": {
+     * "Sheet": {
+     * "package" : "bookrpg.cfg",
+     * "className": "Sheet",
+     * "classNameSuffix" : "Cfg",
+     * "parentClass": "bookrpg.config.ConfigItemBase" ,
+     * "managerParentClass": "bookrpg.config.ConfigMgrSingleKey",
+     * "fields": {
+     * "id": {"name": "ID", "isPrimaryKey": true, "createQuery": false},
+     * "name": {"name": "name", "isPrimaryKey": false, "createQuery": true},
+     * "color": {"name": "color", "isPrimaryKey": false, "createQuery": false},
+     * }
+     * }
+     * }
+     * }*/
     protected $prjInfo;
 
     public function generate(array $params)
     {
-
         $this->params = $params;
-        // Util::restWarningError();
-
         $this->updateSheet();
-        $this->createClass('class');
-        $this->createClass('parentClass');
+
+        $sheetType = $params['sheetType'];
+
+        if ($this->createTwoClass) {
+            $this->createClass($sheetType . 'Parent', true);
+            $this->createClass($sheetType . 'Child');
+            $this->createClass($sheetType . 'MgrParent', true, true);
+            $this->createClass($sheetType . 'MgrChild', false, true);
+        } else {
+            $this->createClass($sheetType . 'Parent');
+            $this->createClass($sheetType . 'MgrParent', false, true);
+        }
     }
 
-    protected function createClass($tplName)
+    protected function createClass($tplName, $isParent = false, $isMgr = false)
     {
         if (($tpl = $this->getTpl($tplName)) == '') {
             return;
         }
+
+        $twoClassSuffix = $isParent ? $this->twoClassSuffix : '';
 
         $params = &$this->params;
         $convertParams = &$params['convertParams'];
@@ -62,12 +78,15 @@ class CodeGeneratorBase implements ICodeGenerator
         $sheet = $prjInfo['sheets'][$sheetName];
         $fileFormat = $convertParams['exportFormat'];
         $package = $sheet['package'];
-        $className = ucfirst($sheet['className']) . $sheet['classNameSuffix'];
-        $parentClass = $sheet['parentClass'];
+
+        $baseClassName = ucfirst($sheet['className']) . $sheet['classNameSuffix'];
+        $className = $baseClassName . $twoClassSuffix;
+        $parentClassName = $sheet['parentClass'];
+        $managerClassName = $baseClassName . 'Mgr' . $twoClassSuffix;
         $managerParentClass = $sheet['managerParentClass'];
         $fields = $sheet['fields'];
         $keyTypes = $this->convertTypeAndGetPKey($fields);
-        $TItem = $className;
+        $TItem = $baseClassName;
         $TKey1 = count($keyTypes) > 0 ? $keyTypes[0] : '';
         $TKey2 = count($keyTypes) > 1 ? $keyTypes[1] : '';
 
@@ -76,7 +95,7 @@ class CodeGeneratorBase implements ICodeGenerator
         $str = ob_get_contents();
         ob_clean();
 
-        $fileSavePath = $this->getFileSavePath($className, $package, $tpl);
+        $fileSavePath = $this->getFileSavePath($isMgr ? $managerClassName : $className, $package, $tpl);
         Util::saveToFile($fileSavePath, $str);
     }
 
@@ -87,8 +106,7 @@ class CodeGeneratorBase implements ICodeGenerator
         foreach ($fields as &$field) {
             $i++;
             $field['type'] = $this->convertType($field['type']);
-            if ($field['isPrimaryKey'] && ($i == 1 || $i == 2))
-            {
+            if ($field['isPrimaryKey'] && ($i == 1 || $i == 2)) {
                 $ret[] = $field['type'];
             }
         }
@@ -106,14 +124,14 @@ class CodeGeneratorBase implements ICodeGenerator
         $params = &$this->params['convertParams'];
 
         $fileSavePath = $params['codeSavePath'] == '' ?
-        Util::getDir($params['inputPath']) : $params['codeSavePath'];
+            Util::getDir($params['inputPath']) : $params['codeSavePath'];
 
         if ($params['genPackageDir']) {
             $fileSavePath = Util::addDirSeparator($fileSavePath) .
-            str_replace('.', '/', $package);
+                str_replace('.', '/', $package);
         }
 
-        return Util::addDirSeparator($fileSavePath) . 
+        return Util::addDirSeparator($fileSavePath) .
         $name . '.' . Util::getExtension($tpl);
     }
 
@@ -157,23 +175,24 @@ class CodeGeneratorBase implements ICodeGenerator
             if (isset($prjInfo['sheets'][$sheetName])) {
                 $sheet = &$prjInfo['sheets'][$sheetName];
 
-                if ($sheet['package'] != $prjInfo['package']) {
-                    $newSheet['package'] = $sheet['package'];
+                if ($sheet['package'] == $prjInfo['package']) {
+                    $sheet['package'] = $newSheet['package'];
                 }
 
-                if ($sheet['classNameSuffix'] != $prjInfo['codeSuffix']) {
-                    $newSheet['classNameSuffix'] = $sheet['classNameSuffix'];
+                if ($sheet['classNameSuffix'] == $prjInfo['codeSuffix']) {
+                    $sheet['classNameSuffix'] = $newSheet['classNameSuffix'];
                 }
 
-                $fields = $sheet['fields'];
+                $fields = &$sheet['fields'];
                 $newFields = &$newSheet['fields'];
-                foreach ($fields as $key => $value) {
-                    if (isset($newFields[$key])) {
-                        $value['type'] = $newFields[$key]['type'];
-                        $newFields[$key] = $value;
-                    } 
+                foreach ($newFields as $key => $value) {
+                    if (isset($fields[$key])) {
+                        $fields[$key]['type'] = $value['type'];
+                        $fields[$key]['desc'] = $value['desc'];
+                        $newFields[$key] = $fields[$key];
+                    }
                 }
-                $sheet = $newSheet;
+                $fields = $newFields;
 
             } else {
                 $prjInfo['sheets'][$sheetName] = $newSheet;
@@ -188,8 +207,9 @@ class CodeGeneratorBase implements ICodeGenerator
         }
     }
 
-    public function start()
+    public function start(array $params)
     {
+        $this->params = $params;
         $prjFile = $this->getPrjFile();
 
         if (file_exists($prjFile)) {
@@ -202,28 +222,35 @@ class CodeGeneratorBase implements ICodeGenerator
         }
     }
 
-    public function end()
+    public function end(array $params)
     {
-        if ($this->prjInfo && $this->params) {
-            $convertParams = &$this->params['convertParams'];
+        if ($this->prjInfo && $params) {
+            $convertParams = &$params['convertParams'];
             $this->prjInfo["package"] = $convertParams['package'];
             $this->prjInfo["codeSuffix"] = $convertParams['codeSuffix'];
             $this->prjInfo["time"] = date("Y-m-d H:i:s");
 
             foreach ($this->prjInfo['sheets'] as &$sheet) {
-                foreach ($sheet as &$field) {
+                foreach ($sheet['fields'] as &$field) {
                     unset($field['type']);
                     unset($field['desc']);
                 }
             }
-            Util::saveToFile($this->prjFile, $this->prjInfo);
+            Util::saveToFile(
+                $this->prjFile,
+                json_encode($this->prjInfo,
+                    JSON_PRETTY_PRINT |
+                    JSON_UNESCAPED_UNICODE |
+                    JSON_UNESCAPED_SLASHES)
+            );
         }
     }
 
     protected function getPrjFile()
     {
-        $codeType = $this->params['codeType'];
-        $input = $this->params['inputPath'];
+        $convertParams = &$this->params['convertParams'];
+        $codeType = $convertParams['codeType'];
+        $input = $convertParams['inputPath'];
         $input = rtrim(str_replace('\\', '/', $input), '/');
         if (is_file($input)) {
             $input = basename($input);
@@ -231,10 +258,12 @@ class CodeGeneratorBase implements ICodeGenerator
             if (!is_dir($input)) {
                 $input = dirname($input);
             }
-            $input = substr($input, strrpos($input, '/') + 1);
+            if (($n = strrpos($input, '/')) !== false) {
+                $input = substr($input, $n + 1);
+            }
         }
 
-        $this->prjFile = HISTORY_DIR . $input . '_' . $codeType . 'json';
+        $this->prjFile = HISTORY_DIR . $input . '_' . $codeType . '.json';
 
         return $this->prjFile;
     }
@@ -244,7 +273,7 @@ class CodeGeneratorBase implements ICodeGenerator
         $tplDir = $this->templateDir;
         $arr = glob(Util::addDirSeparator($tplDir) . $tplName . '.*');
         if ($arr === false || count($arr) == 0) {
-            Util::error("can not find template: $tplName in $tplDir");
+            Util::warning("can not find template: $tplName in $tplDir");
             return '';
         }
         return $arr[0];

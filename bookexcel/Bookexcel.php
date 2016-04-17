@@ -14,6 +14,7 @@ require_once APP_ROOT . 'IConverter.php';
 require_once APP_ROOT . 'ICodeGenerator.php';
 require_once APP_ROOT . 'Util.php';
 require_once APP_ROOT . 'TplEngine.php';
+require_once APP_ROOT . 'converter/ConverterBase.php';
 require_once APP_ROOT . 'codegenerator/CodeGeneratorBase.php';
 
 autoload(APP_ROOT . 'converter');
@@ -79,30 +80,16 @@ class Bookexcel
 
     /**
      * batch export excels to json,xml,csv,txt ... and generate program code
-     * @param  array|null $params see defaultParams.php
-     * @return [type]             void
+     * @param  array|null   see defaultParams.php
+     * @return void
      */
-    public function parseExcels(array $params = null)
+    public function convertExcels(array $params = null)
     {
-        $excelCount = 0;
-        $this->errorCount = 0;
-        $this->warningCount = 0;
-        $this->sheetNames = array();
+        Util::restWarningError();
 
-        $defaultParams = require 'defaultParams.php';
-        if (is_null($params)) {
-            $params = $defaultParams;
-        } else {
-            foreach ($defaultParams as $k => $v) {
-                if (!isset($params[$k])) {
-                    $params[$k] = $v;
-                }
-            }
-        }
-
-        $this->params = $params;
+        $params = $this->mergeParams($params);
         $path = Util::getAbsolutePath($params['inputPath']);
-        $excludes = $params['excludes'];
+        $this->sheetNames = array();
 
         if ($params['outputPath'] != '') {
             $this->fileSavePath = Util::getAbsolutePath(
@@ -112,81 +99,90 @@ class Bookexcel
         }
 
         if (empty($this->converter[$params['exportFormat']])) {
-            $this->error('not support exportFormat: ' . $params['exportFormat']);
+            Util::error('not support exportFormat: ' . $params['exportFormat']);
             echo PHP_EOL;
             return;
-        }
-
-        if ($params['codeType'] != '' &&
-            empty($this->codeGenerator[$params['codeType']])) {
-            $this->warning('not support codeType: ' . $params['codeType']);
         }
 
         echo '---------------------------------' . PHP_EOL;
         echo 'start parse excel at: ' . $path . PHP_EOL;
         echo PHP_EOL;
 
-        try {
-            if (is_dir($path)) {
-                $dir = Util::addDirSeparator($path);
-                $needCheckExt = true;
-                $files = scandir($path);
-            } else {
-                $dir = '';
-                $needCheckExt = !preg_match('/.+\.^\/+$/', $path);
-                $files = glob($path);
+        if (!($files = $this->findExcelFiles($path))) {
+            return;
+        }
+        $excelCount = count($files);
+
+        foreach ($files as $filename) {
+            $basename = basename($filename);
+            echo '--------read file:' . $filename . PHP_EOL;
+
+            try {
+                $this->parseExcel($filename);
+            } catch (Exception $e) {
+                Util::error($e->getMessage());
             }
-
-            if ($files === false) {
-                $this->error('can not find files at: ' . $path);
-                echo PHP_EOL;
-                return;
-            }
-
-            foreach ($files as $filename) {
-                $basename = basename($filename);
-                $filename = $dir . $filename;
-
-                if (is_file($filename) &&
-                    !$this->isIgnoreFile($basename) &&
-                    !Util::isExclude($filename, $excludes) &&
-                    (($needCheckExt && $this->isExcelExt($basename)) || !$needCheckExt)) {
-
-                    $excelCount++;
-                    echo '--------read file:' . $filename . PHP_EOL;
-
-                    try {
-                        $this->parseExcel($filename);
-                    } catch (Exception $e) {
-                        $this->error($e->getMessage());
-                    }
-                }
-            }
-
-        } catch (Exception $e) {
-            $this->error($e->getMessage());
         }
 
         echo PHP_EOL;
         echo 'finish parse excel at: ' . $path . PHP_EOL;
         echo 'total file count: ' . $excelCount . PHP_EOL;
-        echo 'error count: ' . $this->errorCount . PHP_EOL;
-        echo 'warning count: ' . $this->warningCount . PHP_EOL;
+        echo 'error count: ' . Util::$errorCount . PHP_EOL;
+        echo 'warning count: ' . Util::$warningCount . PHP_EOL;
         echo '---------------------------------' . PHP_EOL;
     }
 
-    private function parseExcel($filename)
+    public function generateCode(array $params = null)
+    {
+        Util::restWarningError();
+
+        $params = $this->mergeParams($params);
+        $path = Util::getAbsolutePath($params['inputPath']);
+
+        if (!$this->getCodeGenerator()) {
+            Util::warning('not support codeType: ' . $params['codeType']);
+        }
+
+        echo '---------------------------------' . PHP_EOL;
+        echo 'start generate code at: ' . $path . PHP_EOL;
+        echo PHP_EOL;
+
+        if (!($files = $this->findExcelFiles($path))) {
+            return;
+        }
+        $excelCount = count($files);
+
+        foreach ($files as $filename) {
+            $basename = basename($filename);
+            echo '--------read file:' . $filename . PHP_EOL;
+
+            try {
+                $this->parseExcel($filename, true);
+            } catch (Exception $e) {
+                Util::error($e->getMessage());
+            }
+        }
+
+        echo PHP_EOL;
+        echo 'finish generate code at: ' . $path . PHP_EOL;
+        echo 'total file count: ' . $excelCount . PHP_EOL;
+        echo 'error count: ' . Util::$errorCount . PHP_EOL;
+        echo 'warning count: ' . Util::$warningCount . PHP_EOL;
+        echo '---------------------------------' . PHP_EOL;
+
+    }
+
+    private function parseExcel($filename, $onlyGenCode = false)
     {
         $basename = basename($filename);
         $params = $this->params;
-        $exportTag = $params['exportTag'];
-        $commentSymbol = $params['commentSymbol'];
         $emptyRowWarnCount = $params['emptyRowWarnCount'];
         $emptyFieldWarnCount = $params['emptyFieldWarnCount'];
-        $codeType = $params['codeType'];
         $extension = $params['extension'] == '' ?
-        $params['exportFormat'] : $params['extension'];
-        $converter = $this->converter[$params['exportFormat']];
+            $params['exportFormat'] : $params['extension'];
+
+        $converter = $onlyGenCode ? false : $this->converter[$params['exportFormat']];
+        $codeGenerator = $this->getCodeGenerator();
 
         $excel = new ExcelParser();
         $excel->parseExcel($filename, $params);
@@ -208,7 +204,7 @@ class Bookexcel
                 echo 'parse sheet: ' . $basename . '->' . $orgSheetName . PHP_EOL;
 
                 $fileSavePath = $this->fileSavePath == '' ?
-                dirname($filename) : $this->fileSavePath;
+                    dirname($filename) : $this->fileSavePath;
                 $fileSavePath = Util::addDirSeparator($fileSavePath) .
                     $mergeSheetName . '.' . $extension;
 
@@ -219,28 +215,40 @@ class Bookexcel
                 $excel->changeSheet($mergeSheet['orgIndex']);
 
                 if (empty($excel->nameRow) || empty($excel->typeRow)) {
-                    $this->warning('there is no name row or type row');
+                    Util::warning('there is no name row or type row');
                     continue;
                 }
 
                 if ($isFirstSheet) {
                     $isFirstSheet = false;
-                    $header = $converter->convertHeader($excel->createParams());
-                    $this->writeToBuff($fileSavePath, $header);
+
+                    if ($converter) {
+                        $header = $converter->convertHeader($excel->createParams());
+                        $this->writeToBuff($fileSavePath, $header);
+                    }
+
+                    if ($codeGenerator) {
+                        $codeGenerator->start($excel->createParams());
+                    }
+
                 } else {
                     if (!empty($lastNameRow) && $lastNameRow != $excel->nameRow) {
-                        $this->error('nameRow not equal lastNameRow');
+                        Util::error('nameRow not equal lastNameRow');
                         continue;
                     }
 
                     if (!empty($lastTypeRow) && $lastTypeRow != $excel->typeRow) {
-                        $this->error('typeRow not equal lastTypeRow');
+                        Util::error('typeRow not equal lastTypeRow');
                         continue;
                     }
                 }
 
                 $lastNameRow = $excel->nameRow;
                 $lastTypeRow = $excel->typeRow;
+
+                if (!$converter) {
+                    continue;
+                }
 
                 foreach ($reader as $key => $row) {
 
@@ -259,7 +267,7 @@ class Bookexcel
                     $isLastRowEmpty = false;
 
                     if ($emptyFieldCount >= $emptyFieldWarnCount) {
-                        $this->warning('too many empty field at row: ' . $key);
+                        Util::warning('too many empty field at row: ' . $key);
                     }
 
                     $result = $converter->convertItem($excel->createParams($row));
@@ -268,35 +276,110 @@ class Bookexcel
 
                 //最后一行不为空，中间有太多空行，用于提醒用户检查脏数据
                 if (!$isLastRowEmpty && $emptyRowCount >= $emptyRowWarnCount) {
-                    $this->warning('too many empty row, total: ' . $emptyRowCount);
+                    Util::warning('too many empty row, total: ' . $emptyRowCount);
                 }
             }
 
             if (!empty($lastNameRow) && !empty($lastTypeRow)) {
-                $footer = $converter->convertFooter($excel->createParams());
-                $this->writeToBuff($fileSavePath, $footer);
-                $this->flush();
+                if ($converter) {
+                    $footer = $converter->convertFooter($excel->createParams());
+                    $this->writeToBuff($fileSavePath, $footer);
+                    $this->flush();
 
-                if (isset($this->sheetNames[$mergeSheetName])) {
-                    $this->warning(sprintf(
-                        "sheet name repeated at: %s->%s and %s->%s",
-                        $basename,
-                        $mergeSheetName,
-                        $this->sheetNames[$mergeSheetName],
-                        $mergeSheetName));
+                    if (isset($this->sheetNames[$mergeSheetName])) {
+                        Util::warning(sprintf(
+                            "sheet name repeated at: %s->%s and %s->%s",
+                            $basename,
+                            $mergeSheetName,
+                            $this->sheetNames[$mergeSheetName],
+                            $mergeSheetName));
+                    }
+
+                    $this->sheetNames[$mergeSheetName] = $basename;
                 }
 
-                $this->sheetNames[$mergeSheetName] = $basename;
-
                 //生成解析代码
-                if ($codeType != '' && !empty($excel->nameRow) &&
-                    !empty($this->codeGenerator[$codeType])) {
-                    
-                    $codeGenerator = $this->codeGenerator[$codeType];
+                if ($codeGenerator && !empty($excel->nameRow)) {
                     $codeGenerator->generate($excel->createParams());
                 }
             }
+
+            if ($codeGenerator) {
+                $codeGenerator->end($excel->createParams());
+            }
         }
+    }
+
+    private function mergeParams($params = null) {
+        $defaultParams = require 'defaultParams.php';
+
+        if ($params == null) {
+            $params = $defaultParams;
+        } else {
+            foreach ($defaultParams as $k => $v) {
+                if (!isset($params[$k])) {
+                    $params[$k] = $v;
+                }
+            }
+        }
+
+        $this->params = $params;
+        return $params;
+    }
+
+    private function findExcelFiles($path)
+    {
+        global $params;
+        $excludes = $params['excludes'];
+
+        try {
+            if (is_dir($path)) {
+                $dir = Util::addDirSeparator($path);
+                $needCheckExt = true;
+                $files = scandir($path);
+            } else {
+                $dir = '';
+                $needCheckExt = !preg_match('/.+\.^\/+$/', $path);
+                $files = glob($path);
+            }
+
+            if ($files === false) {
+                Util::error('can not find files at: ' . $path);
+                echo PHP_EOL;
+                return false;
+            }
+
+            $arr = array();
+
+            foreach ($files as $filename) {
+                $filename = $dir . $filename;
+
+                if (is_file($filename) &&
+                    !$this->isIgnoreFile($filename) &&
+                    !Util::isExclude($filename, $excludes) &&
+                    (($needCheckExt && $this->isExcelExt($filename)) || !$needCheckExt)
+                ) {
+                    $arr[] = $filename;
+                }
+            }
+
+            return $arr;
+
+        } catch (Exception $e) {
+            Util::error($e->getMessage());
+            return false;
+        }
+
+    }
+
+    private function getCodeGenerator()
+    {
+        $codeType = $this->params['codeType'];
+        if ($codeType != '' && isset($this->codeGenerator[$codeType])) {
+            return $this->codeGenerator[$codeType];
+        }
+
+        return null;
     }
 
     private function writeToBuff($filename, $content)
@@ -335,7 +418,7 @@ class Bookexcel
     {
         $chaset = $this->params['outputEncode'];
         $buff = ($chaset != '' && $chaset != 'utf-8') ?
-        iconv('utf-8', $chaset, $this->buffFileContent) : $this->buffFileContent;
+            iconv('utf-8', $chaset, $this->buffFileContent) : $this->buffFileContent;
         $file = fopen($filename, 'a');
         if ($success = ($file !== false)) {
             $success = (fwrite($file, $buff) !== false);
@@ -370,6 +453,8 @@ class Bookexcel
 
     private function isIgnoreFile($filename)
     {
+        $filename = basename($filename);
+
         //#中文.xls 非字母、数字、下划线命名的文件
         // if($this->params['onlySimpleName'] && !preg_match('/^[a-zA-Z]\w*\.?\w*$/', $filename)){
         //     return true;
@@ -385,17 +470,5 @@ class Bookexcel
         if ($commentSymbol != '' && strpos($filename, $commentSymbol) === 0) {
             return true;
         }
-    }
-
-    private function warning($msg)
-    {
-        $this->warningCount++;
-        echo 'warning: ' . $msg . PHP_EOL;
-    }
-
-    private function error($msg)
-    {
-        $this->errorCount++;
-        echo 'error: ' . $msg . PHP_EOL;
     }
 }

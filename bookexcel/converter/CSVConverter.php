@@ -5,15 +5,19 @@
  * @license The MIT License
  */
 
-class CSVConverter implements IConverter
+class CSVConverter extends ConverterBase
 {
 
     const DELIMITER = ',';
 
     public function convertHeader(array $params)
     {
+        $this->checkKVSheet($params);
+        
         $nameRow = $params['nameRow'];
         $convertParams = $params['convertParams'];
+
+        $this->removeItemType($params, $nameRow);
 
         foreach ($nameRow as $k => $v) {
             $nameRow[$k] = $this->escape($v);
@@ -30,6 +34,8 @@ class CSVConverter implements IConverter
     {
         $dataRow = $params['dataRow'];
         $convertParams = $params['convertParams'];
+
+        $this->removeItemType($params, $dataRow);
 
         foreach ($dataRow as $k => $v) {
             $dataRow[$k] = $this->escape($v);

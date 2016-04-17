@@ -5,19 +5,28 @@
  * @license The MIT License
  */
 
-class TXTConverter implements IConverter
+class TXTConverter extends ConverterBase
 {
 
     const DELIMITER = "\t";
 
     public function convertHeader(array $params)
     {
+        $this->checkKVSheet($params);
+
         $nameRow = $params['nameRow'];
         $convertParams = $params['convertParams'];
+
+        $this->removeItemType($params, $nameRow);
 
         foreach ($nameRow as $k => $v) {
             $nameRow[$k] = $this->escape($v);
         }
+
+        if ($params['sheetType'] == SHEET_TYPE_KV) {
+            unset($nameRow['itemType']);
+        }
+
         return implode(self::DELIMITER, $nameRow) . $convertParams['endOfLine'];
     }
 
@@ -30,6 +39,8 @@ class TXTConverter implements IConverter
     {
         $dataRow = $params['dataRow'];
         $convertParams = $params['convertParams'];
+
+        $this->removeItemType($params, $dataRow);
 
         foreach ($dataRow as $k => $v) {
             $dataRow[$k] = $this->escape($v);
