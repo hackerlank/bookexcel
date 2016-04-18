@@ -33,7 +33,9 @@ namespace {%$package%}
                         foreach ($dataRow as $row): 
                         $i++;
                         $name = $row[$nameIndex];
-                        list($type, $arrDeep) = $this->convertType2($row[$typeIndex]);
+                        $ctype = $this->convertType2($row[$typeIndex]);
+                        $type = $ctype[0];
+                        $arrDeep = $ctype[1];
                         $get = 'getValue';
                         if ($arrDeep == 1) {
                             $get = 'getList';

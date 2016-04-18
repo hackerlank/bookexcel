@@ -30,10 +30,11 @@ namespace {%$package%}
 
         {% 
             foreach ($fields as $field): 
-            list($type, $arrDeep) = $this->convertType2($field['type']);
-            if ($field['createQuery'] && $arrDeep == 0) :
+            $ctype = $this->convertType2($field['type']);
+            if ($field['createQuery'] && $ctype[1] == 0) :
             $name = $field['name'];
             $uname = ucfirst($name);
+            $type = $ctype[0];
         %}
         public {%$className%} getItemBy{%$uname%}({%$type%} value)
         {

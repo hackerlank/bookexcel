@@ -8,7 +8,7 @@ using System.Collections;
 
 namespace bookrpg.config
 {
-    public interface IParser : ICollection, IEnumerable
+    public interface IConfigParser : ICollection, IEnumerable
     {
         int currentRow { get; }
 

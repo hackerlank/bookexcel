@@ -14,7 +14,7 @@ namespace bookrpg.config
     /// <summary>
     /// Parse json string
     /// </summary>
-    public class JsonParser : IParser, ICollection, IEnumerable, IEnumerator
+    public class JsonParser : IConfigParser, ICollection, IEnumerable, IEnumerator
     {
         public JsonData data;
 
@@ -35,7 +35,7 @@ namespace bookrpg.config
             {
                 data = JsonMapper.ToObject(content);
                 return true;
-            } catch (Exception e)
+            } catch (Exception)
             {
 //                throw new ConfigException("JsonParser: json format error", e);
                 return false;

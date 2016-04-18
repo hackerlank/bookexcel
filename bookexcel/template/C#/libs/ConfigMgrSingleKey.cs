@@ -19,7 +19,7 @@ namespace bookrpg.config
         protected SortedList<TKey, TItem> itemSortList = new SortedList<TKey, TItem>();
         protected IList<TItem> itemList = new List<TItem>();
 
-        protected IParser parser;
+        protected IConfigParser parser;
 
         public virtual bool init(string text, string format=null)
         {
@@ -54,7 +54,7 @@ namespace bookrpg.config
             foreach(var tp in parser)
             {
                 TItem item = new TItem();
-                if (!item.parseFrom(tp as IParser))
+                if (!item.parseFrom(tp as IConfigParser))
                 {
                     Debug.LogErrorFormat("Failed to init:{0}, error at row({1})", 
                         this.ToString(), i);
@@ -63,7 +63,7 @@ namespace bookrpg.config
                 TKey key = (TKey)item.getKey();
                 if (itemSortList.ContainsKey(key))
                 {
-                    Debug.LogWarningFormat("Failed to init:{0}, multi key({1}) at row({2})", 
+                    Debug.LogWarningFormat("init:{0}, multi key({1}) at row({2})", 
                         this.ToString(), key, i);
                     itemSortList [key] = item;
                 } else
@@ -76,7 +76,7 @@ namespace bookrpg.config
             return true;
         }
 
-        protected IParser getParser(string format)
+        protected IConfigParser getParser(string format)
         {
             switch(format){
                 case "txt":
@@ -92,7 +92,7 @@ namespace bookrpg.config
             return this.parser;
         }
 
-        public void setParser(IParser parser)
+        public void setParser(IConfigParser parser)
         {
             this.parser = parser;
         }

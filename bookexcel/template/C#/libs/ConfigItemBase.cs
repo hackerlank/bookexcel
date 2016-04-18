@@ -18,7 +18,7 @@ namespace bookrpg.config
         {
         }
 
-        public virtual bool parseFrom(IParser parser)
+        public virtual bool parseFrom(IConfigParser parser)
         {
             throw new NotImplementedException();
         }

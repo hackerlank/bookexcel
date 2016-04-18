@@ -66,6 +66,8 @@ class Bookexcel
             'php' => new PHPCodeGenerator(),
             'C#' => new CSharpCodeGenerator(),
         );
+
+        TplEngine::$cacheDir = CACHE_DIR;
     }
 
     public function addConverter($formart, IConverter $converter)

@@ -13,7 +13,7 @@ namespace bookrpg.config
     /// <summary>
     /// Parse tab delimited string, much like csv
     /// </summary>
-    public class TxtParser : IParser, ICollection, IEnumerable, IEnumerator
+    public class TxtParser : IConfigParser, ICollection, IEnumerable, IEnumerator
     {
         private string[] title;
         private List<string[]> body;

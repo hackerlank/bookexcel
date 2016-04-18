@@ -17,13 +17,17 @@ class TplEngine
 
     private static $caches = array();
 
+    public static $cacheDir = '';
+
     public static function compileFile($filename)
     {
         if (!is_file($filename)) {
             return '';
         }
 
-        $compiledFilename = __DIR__ . '/cache/' . basename($filename) . '.php';
+        $cacheDir = self::$cacheDir == '' ? __DIR__ . '/cache' : self::$cacheDir;
+
+        $compiledFilename = Util::addDirSeparator($cacheDir) . basename($filename) . '.php';
 
         $cache = @self::$caches[$filename];
 

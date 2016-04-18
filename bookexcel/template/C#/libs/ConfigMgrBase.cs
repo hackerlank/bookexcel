@@ -17,7 +17,7 @@ namespace bookrpg.config
         where TItem : ConfigItemBase, new()
     {
         protected IList<TItem> itemList = new List<TItem>();
-        protected IParser parser;
+        protected IConfigParser parser;
 
         public virtual bool init(string text, string format)
         {
@@ -51,7 +51,7 @@ namespace bookrpg.config
             foreach(var tp in parser)
             {
                 TItem item = new TItem();
-                if (!item.parseFrom(tp as IParser))
+                if (!item.parseFrom(tp as IConfigParser))
                 {
                     Debug.LogErrorFormat("Failed to init:{0}, error at row({1})", 
                         this.ToString(), i);
@@ -63,7 +63,7 @@ namespace bookrpg.config
             return true;
         }
 
-        protected IParser getParser(string format)
+        protected IConfigParser getParser(string format)
         {
             switch(format){
                 case "txt":
@@ -79,7 +79,7 @@ namespace bookrpg.config
             return this.parser;
         }
 
-        public void setParser(IParser parser)
+        public void setParser(IConfigParser parser)
         {
             this.parser = parser;
         }

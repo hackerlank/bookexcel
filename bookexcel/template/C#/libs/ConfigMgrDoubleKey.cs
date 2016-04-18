@@ -21,14 +21,9 @@ namespace bookrpg.config
         
         protected IList<TItem> itemList = new List<TItem>();
 
-        protected IParser parser;
+        protected IConfigParser parser;
 
-        public virtual bool init(string text)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected virtual bool init(string text, string format)
+        public virtual bool init(string text, string format)
         {
             if (string.IsNullOrEmpty(text))
             {
@@ -61,7 +56,7 @@ namespace bookrpg.config
             foreach(var tp in parser)
             {
                 TItem item = new TItem();
-                if (!item.parseFrom(tp as IParser))
+                if (!item.parseFrom(tp as IConfigParser))
                 {
                     Debug.LogErrorFormat("Failed to init:{0}, error at row({1})", 
                         this.ToString(), i);
@@ -74,9 +69,10 @@ namespace bookrpg.config
                 if (getItemGroup(key) == null)
                 {
                     itemSortList.Add(key, new SortedList<TKey2, TItem>());
+                    itemSortList[key].Add(key2, item);
                 } else if (itemSortList [key].ContainsKey(key2))
                 {
-                    Debug.LogWarningFormat("Failed to init:{0}, multi key1:({1}) key2(2) at row({3})", 
+                    Debug.LogWarningFormat("init:{0}, multi key1:({1}) key2(2) at row({3})", 
                         this.ToString(), key, key2, i);
                     itemSortList [key][key2] = item;
                 } else
@@ -90,7 +86,7 @@ namespace bookrpg.config
             return true;
         }
 
-        protected IParser getParser(string format)
+        protected IConfigParser getParser(string format)
         {
             switch(format){
                 case "txt":
@@ -106,7 +102,7 @@ namespace bookrpg.config
             return this.parser;
         }
 
-        public void setParser(IParser parser)
+        public void setParser(IConfigParser parser)
         {
             this.parser = parser;
         }
