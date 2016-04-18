@@ -16,6 +16,10 @@ namespace bookrpg.config
 
         bool parseString(string content);
 
+        bool has(string columnName);
+
+        bool has(int columnIndex);
+
         T getValue<T>(string columnName);
 
         T getValue<T>(int columnIndex);

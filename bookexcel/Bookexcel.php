@@ -190,12 +190,12 @@ class Bookexcel
         $sheets = $excel->sheets;
 
         foreach ($sheets as $mergeSheets) {
-
             $lastNameRow = null;
             $lastTypeRow = null;
             $orgSheetName = '';
             $mergeSheetName = '';
             $isFirstSheet = true;
+            $rows = array();
 
             foreach ($mergeSheets as $mergeSheet) {
                 $orgSheetName = $mergeSheet['orgSheetName'];
@@ -246,7 +246,7 @@ class Bookexcel
                 $lastNameRow = $excel->nameRow;
                 $lastTypeRow = $excel->typeRow;
 
-                if (!$converter) {
+                if (!$converter && $excel->sheetType != SHEET_TYPE_KV) {
                     continue;
                 }
 
@@ -270,8 +270,14 @@ class Bookexcel
                         Util::warning('too many empty field at row: ' . $key);
                     }
 
-                    $result = $converter->convertItem($excel->createParams($row));
-                    $this->writeToBuff($fileSavePath, $result);
+                    if ($excel->sheetType == SHEET_TYPE_KV) {
+                        $rows[] = $row;
+                    }
+
+                    if ($converter){
+                        $result = $converter->convertItem($excel->createParams($row));
+                        $this->writeToBuff($fileSavePath, $result);
+                    }
                 }
 
                 //最后一行不为空，中间有太多空行，用于提醒用户检查脏数据
@@ -300,7 +306,11 @@ class Bookexcel
 
                 //生成解析代码
                 if ($codeGenerator && !empty($excel->nameRow)) {
-                    $codeGenerator->generate($excel->createParams());
+                    if ($excel->sheetType == SHEET_TYPE_KV) {
+                        $codeGenerator->generate($excel->createParams($rows));
+                    } else {
+                        $codeGenerator->generate($excel->createParams());
+                    }
                 }
             }
 

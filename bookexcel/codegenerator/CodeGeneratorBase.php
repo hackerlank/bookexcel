@@ -60,6 +60,8 @@ class CodeGeneratorBase implements ICodeGenerator
         } else {
             $this->createClass($sheetType . 'Parent');
             $this->createClass($sheetType . 'MgrParent', false, true);
+            $this->createClass($sheetType);
+            $this->createClass($sheetType . 'Mgr', false, true);
         }
     }
 
@@ -78,6 +80,8 @@ class CodeGeneratorBase implements ICodeGenerator
         $sheet = $prjInfo['sheets'][$sheetName];
         $fileFormat = $convertParams['exportFormat'];
         $package = $sheet['package'];
+        $nameRow = $params['nameRow'];
+        $dataRow = $params['dataRow'];
 
         $baseClassName = ucfirst($sheet['className']) . $sheet['classNameSuffix'];
         $className = $baseClassName . $twoClassSuffix;
@@ -114,7 +118,7 @@ class CodeGeneratorBase implements ICodeGenerator
         return $ret;
     }
 
-    protected function convertType($type)
+    public function convertType($type)
     {
         return $type;
     }
@@ -273,7 +277,7 @@ class CodeGeneratorBase implements ICodeGenerator
         $tplDir = $this->templateDir;
         $arr = glob(Util::addDirSeparator($tplDir) . $tplName . '.*');
         if ($arr === false || count($arr) == 0) {
-            Util::warning("can not find template: $tplName in $tplDir");
+            //Util::warning("can not find template: $tplName in $tplDir");
             return '';
         }
         return $arr[0];

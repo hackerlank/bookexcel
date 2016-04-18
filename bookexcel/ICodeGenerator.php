@@ -11,7 +11,7 @@ interface ICodeGenerator
      * generate code
      * @param  array  $params [array $nameRow, array $typeRow,
      * array $descRow, $sheetName, $sheetType, $convertParams]
-     * @return [type]         string
+     * @return string
      */
     public function generate(array $params);
 

@@ -34,7 +34,7 @@ $params = array(
 
 $params['inputPath'] = 'test';
 $params['outputPath'] = '';
-$params['exportFormat'] = 'xml';
+$params['exportFormat'] = 'json';
 $params['codeType'] = 'C#';
 $params['codeSuffix'] = 'Cfg';
 $params['codeSavePath'] = '';

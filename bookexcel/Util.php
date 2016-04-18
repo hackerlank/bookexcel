@@ -221,4 +221,45 @@ class Util
         self::$errorCount++;
         echo 'error: ' . $msg . PHP_EOL;
     }
+
+    /**
+     * isGood -> is_good
+     * IsGood -> is_good
+     */
+    public static function camelToUnderline($str)
+    {
+        return strtolower(preg_replace('/(?<=[a-z0-9])(?=[A-Z])/', '_', $str));
+    }
+
+    /**
+     * isGood -> IS_GOOD
+     */
+    public static function camelToConst($str)
+    {
+        return strtoupper(preg_replace('/(?<=[a-z0-9])(?=[A-Z])/', '_', $str));
+    }
+
+    /**
+     * is_good -> isGood
+     */
+    public static function underlineToLowerCamel($str)
+    {
+        return preg_replace_callback(
+            '/_([a-z])/',
+            function($m){return strtoupper($m[1]);},
+            $str
+        );
+    }
+
+    /**
+     * is_good -> IsGood
+     */
+    public static function underlineToUpperCamel($str)
+    {
+        return ucfirst(preg_replace_callback(
+            '/_([a-z])/',
+            function($m){return strtoupper($m[1]);},
+            $str
+        ));
+    }
 }

@@ -23,7 +23,7 @@ Mostly use in game.
 		$params['codeType'] = 'C#';
 		$params['codeSavePath'] = 'src';
 		$bk = new Bookexcel();
-		$bk->parseExcels($params);
+		$bk->convertExcels($params);
 
 3. Run command:
 

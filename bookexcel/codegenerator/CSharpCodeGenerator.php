@@ -29,7 +29,7 @@ class CSharpCodeGenerator extends CodeGeneratorBase
         $this->createTwoClass = false;
     }
 
-    protected function convertType($type)
+    public function convertType($type)
     {
         $typeMap = $this->typeMap;
         $arr = explode('[', $type, 2);

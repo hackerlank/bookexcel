@@ -48,6 +48,23 @@ namespace bookrpg.config
             innerArrayDelimiter = innerDelimi;
         }
 
+        public bool has(string columnName)
+        {
+            try
+            {
+                return data[currentRow][columnName] != null;
+            } catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public bool has(int columnIndex)
+        {
+            var row = data [currentRow];
+            return columnIndex >= 0 && columnIndex < row.Count;
+        }
+
         public T getValue<T>(string columnName)
         {
             Type t = typeof(T);

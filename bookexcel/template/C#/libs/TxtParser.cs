@@ -52,6 +52,17 @@ namespace bookrpg.config
             innerArrayDelimiter = innerDelimi;
         }
 
+        public bool has(string columnName)
+        {
+            return this.has(Array.IndexOf(title, columnName));
+        }
+
+        public bool has(int columnIndex)
+        {
+            var row = body [currentRow];
+            return columnIndex > 0 && columnIndex < row.Length;
+        }
+
         public T getValue<T>(string columnName)
         {
             return this.getValue<T>(Array.IndexOf(title, columnName));
