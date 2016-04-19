@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright (c) 2016, bookrpg, All rights reserved.
- * @author llj wwwllj1985@163.com
+ * @author llj <wwwllj1985@163.com>
  * @license The MIT License
  */
 
@@ -62,9 +62,14 @@ class Bookexcel
             'txt' => new TXTConverter(),
         );
 
+        $php = new PHPCodeGenerator();
+        $csharp = new CSharpCodeGenerator();
+
         $this->codeGenerator = array(
-            'php' => new PHPCodeGenerator(),
-            'C#' => new CSharpCodeGenerator(),
+            'PHP' => $php,
+            'php' => $php,
+            'C#' => $csharp,
+            'c#' => $csharp,
         );
 
         TplEngine::$cacheDir = CACHE_DIR;

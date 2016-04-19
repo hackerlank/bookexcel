@@ -1,16 +1,12 @@
-<?php
+﻿<?php
 /**
  * Copyright (c) 2016, bookrpg, All rights reserved.
  * @author llj <wwwllj1985@163.com>
  * @license The MIT License
  */
 
-/**
- * Parse tab delimited string, much like csv
- */
-class TxtParser implements IConfigParser
+class JsonParser implements IConfigParser
 {
-    private $title;
     private $body;
 
     private $arrayDelimiter;
@@ -31,22 +27,14 @@ class TxtParser implements IConfigParser
             return false;
         }
 
-        if (strpos($content, "\r\n") !== false) {
-            $delimi = "\r\n";
-        } elseif (strpos($content, "\n") !== false) {
-            $delimi = "\n";
-        } else {
-            $delimi = "\r";
-        }
+        try{
+            $this->body = json_decode($content, true);
 
-        $arr = explode($delimi, $content);
-        $this->title = explode("\t", $arr[0]);
-
-        $this->body = array();
-        for ($i = 1; $i < count($arr); $i++) {
-            $this->body[] = explode("\t", $arr[$i]);
+        } catch(Exception $e){
+            //to do log
+            return false;
         }
-        $this->rewind();
+        
         return true;
     }
 
@@ -63,11 +51,12 @@ class TxtParser implements IConfigParser
 
     public function has($column)
     {
+        $row = $this->body[$this->currentRow];
+
         if (is_string($column)) {
-            return in_array($column, $this->title);
+            return isset($row[$column]);
         }
 
-        $row = $this->body[$this->currentRow];
         return $column > 0 && $column < count($row);
     }
 
@@ -103,45 +92,59 @@ class TxtParser implements IConfigParser
 
     public function getList($column, $type)
     {
-        return ParseUtil::getList(
-            $this->getString($column),
-            $type,
-            $this->arrayDelimiter
-        );
+        if (!isset($this->body[$this->currentRow][$column])) {
+            throw new ConfigException(
+                sprintf("JsonParser: cannot read at row(%d) and column(%s)",
+                    $this->currentRow, $column));
+        }
+
+        $val = $this->body[$this->currentRow][$column];
+        if (!is_array($val) || (!empty($val) && !ParseUtil::isType($val[0], $type))) {
+            throw new ConfigException(
+                sprintf("JsonParser: cannot convert to %s[] at row(%d) and column(%s)",
+                    $type, $this->currentRow, $column));
+        }
+
+        return $val;
     }
 
     public function getListGroup($column, $type)
     {
-        return ParseUtil::getListGroup(
-            $this->getString($column),
-            $type,
-            $this->arrayDelimiter,
-            $this->innerArrayDelimiter
-        );
+        if (!isset($this->body[$this->currentRow][$column])) {
+            throw new ConfigException(
+                sprintf("JsonParser: cannot read at row(%d) and column(%s)",
+                    $this->currentRow, $column));
+        }
+
+        $val = $this->body[$this->currentRow][$column];
+        if (!is_array($val) || (!isset($val[0][0]) && !ParseUtil::isType($val[0][0], $type))) {
+            throw new ConfigException(
+                sprintf("JsonParser: cannot convert to %s[][] at row(%d) and column(%s)",
+                    $type, $this->currentRow, $column));
+        }
+
+        return $val;
     }
 
     private function getColumnValue($column, $type)
     {
-        if (is_string($column)) {
-            $column = array_search($column, $this->title);
-        }
-
         $row = $this->body[$this->currentRow];
-        if ($column < 0 || $column >= count($row)) {
+        
+        if (!isset($row[$column])) {
             throw new ConfigException(
-                sprintf("TxtParser: cannot read at row(%d) and column(%s)",
+                sprintf("JsonParser: cannot read at row(%d) and column(%s)",
                     $this->currentRow, $column));
         }
 
         $val = $row[$column];
 
-        if (!ParseUtil::canConvert($val, $type)) {
+        if (!ParseUtil::isType($val, $type)) {
             throw new ConfigException(
-                sprintf("TxtParser: cannot convert to %s at row(%d) and column(%s)",
+                sprintf("JsonParser: cannot convert to %s at row(%d) and column(%s)",
                     $type, $this->currentRow, $column));
         }
 
-        return ParseUtil::convertType($val, $type);
+        return $val;
     }
 
     //region Iterator

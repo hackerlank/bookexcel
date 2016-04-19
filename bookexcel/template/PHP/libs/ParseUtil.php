@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright (c) 2016, bookrpg, All rights reserved.
- * @author llj wwwllj1985@163.com
+ * @author llj <wwwllj1985@163.com>
  * @license The MIT License
  */
 
@@ -53,6 +53,33 @@ class ParseUtil
         }
 
         return $tarr;
+    }
+
+    public static function isType($val, $type)
+    {
+        $b = false;
+        switch ($type) {
+            case 'string':
+                $b = is_string($val);
+                break;
+            case 'int':
+            case 'uint':
+            case 'long':
+            case 'ulong':
+            case 'float':
+            case 'double':
+                $b = is_numeric($val);
+                break;
+            case 'bool':
+            case 'boolean':
+                $b = is_bool($val);
+                break;
+            case 'array':
+                $b = is_array($val);
+                break;
+        }
+
+        return $b;
     }
 
     public static function canConvert($val, $type)

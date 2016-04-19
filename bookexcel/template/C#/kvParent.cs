@@ -10,11 +10,53 @@ using LitJson;
 using bookrpg.config;
 using UnityEngine;
 
+{%$filename = $className.$parentSuffix;%}
 {% if ($package != ''): %}
 namespace {%$package%} 
 {
 {% endif; %}
-    public partial class {%$className%} : {%$parentClassName%} 
+    public partial class {%:$managerClassName.$parentSuffix%} : 
+        {% if ($TKey1 && $TKey2): %}
+        {%$managerParentClass%}<{%$TKey1%}, {%$TKey2%}, {%$TItem%}>
+        {% elseif ($TKey1): %}
+        {%$managerParentClass%}<{%$TKey1%}, {%$TItem%}>
+        {% else: %}
+        {%$managerParentClass%}<{%$TItem%}>
+        {% endif; %}
+    {
+        public {%:$managerClassName.$parentSuffix%}()
+        {
+            this.setParser(new {%:ucfirst($fileFormat)%}Parser());
+        }
+
+        {% 
+            $nameIndex = array_search('itemName', $nameRow);
+            $typeIndex = array_search('itemType', $nameRow);
+            $valueIndex = array_search('itemValue', $nameRow);
+            foreach ($dataRow as $row): 
+            $type = $this->convertType($row[$typeIndex]);
+            $name = $row[$nameIndex];
+        %}
+        public {%$type%} {%$name%} { get; protected set; }
+        {% endforeach; %}
+
+        public override bool init(string text, string format=null)
+        {
+            if (base.init(text, format)) {
+                {% 
+                    foreach ($dataRow as $row): 
+                    $name = $row[$nameIndex];
+                    $type = $this->convertType($row[$typeIndex]);
+                %}
+                this.{%$name%} = ({%$type%})getItem("{%$name%}").value;
+                {% endforeach; %}
+                return true;
+            }
+            return false;
+        }
+    }
+
+    public class {%:$className.$parentSuffix%} : {%$parentClassName%} 
     {
         public string key;
         public object value;

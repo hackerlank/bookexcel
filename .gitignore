@@ -5,6 +5,7 @@ ts.php
 .idea
 
 bookexcel/cache
+cache
 
 .DS_Store
 .AppleDouble

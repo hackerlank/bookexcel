@@ -32,6 +32,11 @@ namespace bookrpg.config
 
         public bool parseString(string content)
         {
+            if (string.IsNullOrEmpty(content))
+            {
+                return false;
+            }
+
             string[] arr = content.Split(new char[]{ '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
             title = arr [0].Split(new char[]{ '\t' });
 
@@ -60,7 +65,7 @@ namespace bookrpg.config
         public bool has(int columnIndex)
         {
             var row = body [currentRow];
-            return columnIndex > 0 && columnIndex < row.Length;
+            return columnIndex >= 0 && columnIndex < row.Length;
         }
 
         public T getValue<T>(string columnName)

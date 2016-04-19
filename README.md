@@ -1,6 +1,6 @@
 # Bookexcel
 
-Export excel to `txt,csv,json,xml` and generate parse code for `C#,Java,PHP...`.
+Export excel to `txt,csv,json,xml` and generate parse code for `C#,PHP...`.
 Mostly use in game.
 
 # Feture

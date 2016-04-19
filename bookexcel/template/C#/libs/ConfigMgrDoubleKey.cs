@@ -23,7 +23,7 @@ namespace bookrpg.config
 
         protected IConfigParser parser;
 
-        public virtual bool init(string text, string format)
+        public virtual bool init(string text, string format = null)
         {
             if (string.IsNullOrEmpty(text))
             {
@@ -53,7 +53,7 @@ namespace bookrpg.config
 
             int i = 0;
 
-            foreach(var tp in parser)
+            foreach (var tp in parser)
             {
                 TItem item = new TItem();
                 if (!item.parseFrom(tp as IConfigParser))
@@ -70,11 +70,11 @@ namespace bookrpg.config
                 {
                     itemSortList.Add(key, new SortedList<TKey2, TItem>());
                     itemSortList[key].Add(key2, item);
-                } else if (itemSortList [key].ContainsKey(key2))
+                } else if (itemSortList[key].ContainsKey(key2))
                 {
                     Debug.LogWarningFormat("init:{0}, multi key1:({1}) key2(2) at row({3})", 
                         this.ToString(), key, key2, i);
-                    itemSortList [key][key2] = item;
+                    itemSortList[key][key2] = item;
                 } else
                 {
                     itemSortList[key].Add(key2, item);
@@ -88,7 +88,8 @@ namespace bookrpg.config
 
         protected IConfigParser getParser(string format)
         {
-            switch(format){
+            switch (format)
+            {
                 case "txt":
                     this.parser = new TxtParser();
                     break;
@@ -137,7 +138,7 @@ namespace bookrpg.config
 
         public virtual bool hasItem(TKey1 key1, TKey2 key2)
         {
-            return itemSortList.ContainsKey(key1) && itemSortList [key1].ContainsKey(key2);
+            return itemSortList.ContainsKey(key1) && itemSortList[key1].ContainsKey(key2);
         }
 
         public virtual bool hasItemGroup(TKey1 key1)
@@ -145,12 +146,12 @@ namespace bookrpg.config
             return itemSortList.ContainsKey(key1);
         }
 
-        public virtual IDictionary<TKey2, TItem> this[TKey1 key1]
+        public virtual IDictionary<TKey2, TItem> this [TKey1 key1]
         {
             get { return getItemGroup(key1); }
         }
 
-        public virtual TItem this[TKey1 key1, TKey2 key2]
+        public virtual TItem this [TKey1 key1, TKey2 key2]
         {
             get { return getItem(key1, key2); }
         }

@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright (c) 2016, bookrpg, All rights reserved.
- * @author llj wwwllj1985@163.com
+ * @author llj <wwwllj1985@163.com>
  * @license The MIT License
  */
 
@@ -26,7 +26,6 @@ class CSharpCodeGenerator extends CodeGeneratorBase
     	$this->templateDir = APP_ROOT . 'template/C#/';
     	$this->defaultParentClass = 'bookrpg.config.ConfigItemBase';
     	$this->defaultmanagerParentClass = 'bookrpg.config.ConfigMgrSingleKey';
-        $this->createTwoClass = false;
     }
 
     public function convertType($type)

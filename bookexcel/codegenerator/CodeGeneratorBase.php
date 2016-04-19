@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright (c) 2016, bookrpg, All rights reserved.
- * @author llj wwwllj1985@163.com
+ * @author llj <wwwllj1985@163.com>
  * @license The MIT License
  */
 
@@ -14,15 +14,7 @@ class CodeGeneratorBase implements ICodeGenerator
     protected $templateDir;
     protected $defaultParentClass = 'defaultParentClass';
     protected $defaultmanagerParentClass = 'defaultmanagerParentClass';
-
-    /**
-     * create two class for one sheet, you cannot modify parent class, because
-     * it is updated by CodeGenerator, but you can modify child class.
-     */
-    protected $createTwoClass = true;
-    protected $twoClassSuffix = 'PT';
-
-    private $prjFile;
+    protected $parentClassSuffix = 'CE';
 
     /**{
      * "package" : "bookrpg.cfg",
@@ -31,8 +23,8 @@ class CodeGeneratorBase implements ICodeGenerator
      * "sheets": {
      * "Sheet": {
      * "package" : "bookrpg.cfg",
+     * "codeSuffix" : "Cfg",
      * "className": "Sheet",
-     * "classNameSuffix" : "Cfg",
      * "parentClass": "bookrpg.config.ConfigItemBase" ,
      * "managerParentClass": "bookrpg.config.ConfigMgrSingleKey",
      * "fields": {
@@ -45,6 +37,8 @@ class CodeGeneratorBase implements ICodeGenerator
      * }*/
     protected $prjInfo;
 
+    private $prjFile;
+
     public function generate(array $params)
     {
         $this->params = $params;
@@ -52,55 +46,54 @@ class CodeGeneratorBase implements ICodeGenerator
 
         $sheetType = $params['sheetType'];
 
-        if ($this->createTwoClass) {
-            $this->createClass($sheetType . 'Parent', true);
-            $this->createClass($sheetType . 'Child');
-            $this->createClass($sheetType . 'MgrParent', true, true);
-            $this->createClass($sheetType . 'MgrChild', false, true);
-        } else {
-            $this->createClass($sheetType . 'Parent');
-            $this->createClass($sheetType . 'MgrParent', false, true);
-            $this->createClass($sheetType);
-            $this->createClass($sheetType . 'Mgr', false, true);
+        $tplDir = $this->templateDir;
+        $tpls = glob(Util::addDirSeparator($tplDir) . $sheetType . '*');
+        if (empty($tpls)) {
+            Util::warning("can not find template for sheetType: $sheetType in $tplDir");
         }
+
+        array_walk($tpls, array($this, 'createClass'));
     }
 
-    protected function createClass($tplName, $isParent = false, $isMgr = false)
+    protected function createClass($tpl)
     {
-        if (($tpl = $this->getTpl($tplName)) == '') {
-            return;
-        }
-
-        $twoClassSuffix = $isParent ? $this->twoClassSuffix : '';
-
+        $prjInfo = &$this->prjInfo;
         $params = &$this->params;
         $convertParams = &$params['convertParams'];
-        $prjInfo = &$this->prjInfo;
         $sheetName = $params['sheetName'];
         $sheet = $prjInfo['sheets'][$sheetName];
+
+        //inject vars into tpl
         $fileFormat = $convertParams['exportFormat'];
+        $arrayDelimiter = $convertParams['arrayDelimiter'];
+        $innerArrayDelimiter = $convertParams['innerArrayDelimiter'];
         $package = $sheet['package'];
         $nameRow = $params['nameRow'];
         $dataRow = $params['dataRow'];
-
-        $baseClassName = ucfirst($sheet['className']) . $sheet['classNameSuffix'];
-        $className = $baseClassName . $twoClassSuffix;
+        $parentSuffix = $this->parentClassSuffix;
+        $className = ucfirst($sheet['className']) . $sheet['codeSuffix'];
         $parentClassName = $sheet['parentClass'];
-        $managerClassName = $baseClassName . 'Mgr' . $twoClassSuffix;
+        $managerClassName = $className . 'Mgr';
         $managerParentClass = $sheet['managerParentClass'];
         $fields = $sheet['fields'];
         $keyTypes = $this->convertTypeAndGetPKey($fields);
-        $TItem = $baseClassName;
+        $TItem = $className;
         $TKey1 = count($keyTypes) > 0 ? $keyTypes[0] : '';
         $TKey2 = count($keyTypes) > 1 ? $keyTypes[1] : '';
+
+        //tpl may modify these vars for itself
+        $filename = $className;
+        $override = true;
 
         ob_start();
         include TplEngine::compileFile($tpl);
         $str = ob_get_contents();
         ob_clean();
 
-        $fileSavePath = $this->getFileSavePath($isMgr ? $managerClassName : $className, $package, $tpl);
-        Util::saveToFile($fileSavePath, $str);
+        $fileSavePath = $this->getFileSavePath($filename, $package, $tpl);
+        if ($override || !file_exists($fileSavePath)) {
+            Util::saveToFile($fileSavePath, $str);
+        }
     }
 
     protected function convertTypeAndGetPKey(&$fields)
@@ -147,7 +140,7 @@ class CodeGeneratorBase implements ICodeGenerator
         $sheet = array(
             'package' => $convertParams['package'],
             'className' => $params['sheetName'],
-            'classNameSuffix' => $convertParams['codeSuffix'],
+            'codeSuffix' => $convertParams['codeSuffix'],
             'parentClass' => $this->defaultParentClass,
             'managerParentClass' => $this->defaultmanagerParentClass,
         );
@@ -183,8 +176,8 @@ class CodeGeneratorBase implements ICodeGenerator
                     $sheet['package'] = $newSheet['package'];
                 }
 
-                if ($sheet['classNameSuffix'] == $prjInfo['codeSuffix']) {
-                    $sheet['classNameSuffix'] = $newSheet['classNameSuffix'];
+                if ($sheet['codeSuffix'] == $prjInfo['codeSuffix']) {
+                    $sheet['codeSuffix'] = $newSheet['codeSuffix'];
                 }
 
                 $fields = &$sheet['fields'];
@@ -276,10 +269,19 @@ class CodeGeneratorBase implements ICodeGenerator
     {
         $tplDir = $this->templateDir;
         $arr = glob(Util::addDirSeparator($tplDir) . $tplName . '.*');
-        if ($arr === false || count($arr) == 0) {
-            //Util::warning("can not find template: $tplName in $tplDir");
+        if (empty($arr)) {
+            Util::error("can not find template: $tplName in $tplDir");
             return '';
         }
         return $arr[0];
+    }
+
+    protected function insertTpl($filename)
+    {
+        if (($tpl = $this->getTpl($filename)) == '') {
+            return '';
+        }
+
+        return TplEngine::compileFile($tpl);
     }
 }

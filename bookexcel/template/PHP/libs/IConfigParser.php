@@ -1,7 +1,7 @@
 ﻿<?php
 /**
  * Copyright (c) 2016, bookrpg, All rights reserved.
- * @author llj wwwllj1985@163.com
+ * @author llj <wwwllj1985@163.com>
  * @license The MIT License
  */
 
