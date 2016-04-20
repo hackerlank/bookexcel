@@ -19,7 +19,9 @@ namespace bookrpg.config
         protected IList<TItem> itemList = new List<TItem>();
         protected IConfigParser parser;
 
-        public virtual bool init(string text, string format)
+        public string resourceName;
+
+        public virtual bool init(string text, string format=null)
         {
             if (string.IsNullOrEmpty(text))
             {

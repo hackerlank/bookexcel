@@ -19,6 +19,7 @@ class {%:$managerClassName.$parentSuffix%} extends \{%$managerParentClass%}
         $parser->setArrayDelemiter('{%$arrayDelimiter%}', '{%$innerArrayDelimiter%}');
         $this->setParser($parser);
         $this->setItemClass('{%$className%}');
+        $this->resourceName = '{%$exportFile%}';
     }
 
     {% 

@@ -27,6 +27,7 @@ namespace {%$package%}
         public {%:$managerClassName.$parentSuffix%}()
         {
             this.setParser(new {%:ucfirst($fileFormat)%}Parser());
+            this.resourceName = "{%$exportFile%}";
         }
 
         {% 

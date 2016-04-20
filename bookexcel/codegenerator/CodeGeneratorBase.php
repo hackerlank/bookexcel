@@ -67,6 +67,8 @@ class CodeGeneratorBase implements ICodeGenerator
 
         //inject vars into tpl
         $fileFormat = $convertParams['exportFormat'];
+        $exportFile = $sheetName . '.' . ($convertParams['extension'] == '' ?
+            $fileFormat : $convertParams['extension']);
         $arrayDelimiter = $convertParams['arrayDelimiter'];
         $innerArrayDelimiter = $convertParams['innerArrayDelimiter'];
         $package = $sheet['package'];

@@ -13,17 +13,13 @@ using bookrpg.log;
 
 namespace bookrpg.config
 {
-    public abstract class ConfigMgrDoubleKey<TKey1, TKey2, TItem>
+    public abstract class ConfigMgrDoubleKey<TKey1, TKey2, TItem>  : ConfigMgrBase<TItem>
             where TItem : ConfigItemBase, new()
     {
         protected SortedList<TKey1, SortedList<TKey2, TItem>> itemSortList = 
             new SortedList<TKey1, SortedList<TKey2, TItem>>();
-        
-        protected IList<TItem> itemList = new List<TItem>();
 
-        protected IConfigParser parser;
-
-        public virtual bool init(string text, string format = null)
+        public override bool init(string text, string format = null)
         {
             if (string.IsNullOrEmpty(text))
             {
@@ -84,33 +80,6 @@ namespace bookrpg.config
                 i++;
             }
             return true;
-        }
-
-        protected IConfigParser getParser(string format)
-        {
-            switch (format)
-            {
-                case "txt":
-                    this.parser = new TxtParser();
-                    break;
-                case "json":
-                    this.parser = new JsonParser();
-                    break;
-                default:
-                    break;
-            }
-
-            return this.parser;
-        }
-
-        public void setParser(IConfigParser parser)
-        {
-            this.parser = parser;
-        }
-
-        public virtual IList<TItem> getAllItems()
-        {
-            return new List<TItem>(itemList);
         }
 
         public virtual IDictionary<TKey1, SortedList<TKey2, TItem>> getAllSortedItems()

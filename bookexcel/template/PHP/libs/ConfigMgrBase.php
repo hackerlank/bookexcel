@@ -8,6 +8,11 @@
 abstract class ConfigMgrBase
 {
     /**
+     * ex: Sheet.txt
+     */
+    public $resourceName;
+
+    /**
      * [ key=>obj ...]
      * or
      * [ key1=>[key2=>obj ...] ...]
