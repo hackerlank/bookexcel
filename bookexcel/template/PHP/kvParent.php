@@ -20,7 +20,7 @@ class {%:$className.$parentSuffix%} extends \{%$parentClassName%}
     public function parseFrom(\IConfigParser $parser)
     {
         try{
-            switch ($parser->currentRow) 
+            switch ($parser->key())
             {
                 {%
                     $nameIndex = array_search('itemName', $nameRow);
@@ -51,7 +51,7 @@ class {%:$className.$parentSuffix%} extends \{%$parentClassName%}
             $this->_key1 = $this->key;
             return true;
 
-        } catch(Exception $e)
+        } catch(\Exception $e)
         {
             // Debug.LogWarning(e.Message);
             return false;

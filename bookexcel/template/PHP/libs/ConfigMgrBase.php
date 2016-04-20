@@ -57,7 +57,7 @@ abstract class ConfigMgrBase
             return false;
         }
 
-        if ($itemClass == null) {
+        if ($this->itemClass == null) {
             // Debug.LogErrorFormat("Failed to init: , please call setItemClass first");
             return false;
         }
@@ -65,7 +65,7 @@ abstract class ConfigMgrBase
         $i = 0;
 
         foreach ($parser as $tp) {
-            $item = new $itemClass();
+            $item = new $this->itemClass();
             
             if (!$item->parseFrom($tp)) {
                 // Debug.LogErrorFormat("Failed to init:{0}, error at row({1})",

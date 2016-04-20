@@ -16,9 +16,8 @@ namespace {%$package%}
 {% endif; %}
     public class {%$managerClassName%} : {%:$managerClassName.$parentSuffix%} 
     {
-        public {%$managerClassName%}()
+        public {%$managerClassName%}() : base()
         {
-            base();
             //your code
         }
 

@@ -29,13 +29,13 @@ class JsonParser implements IConfigParser
 
         try{
             $this->body = json_decode($content, true);
+            $this->rewind();
+            return true;
 
         } catch(Exception $e){
             //to do log
             return false;
         }
-        
-        return true;
     }
 
     public function getCurrentRow()
@@ -151,7 +151,7 @@ class JsonParser implements IConfigParser
 
     public function rewind()
     {
-        $this->currentRow = -1;
+        $this->currentRow = 0;
     }
 
     public function current()

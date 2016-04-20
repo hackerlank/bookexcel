@@ -148,7 +148,7 @@ class TxtParser implements IConfigParser
 
     public function rewind()
     {
-        $this->currentRow = -1;
+        $this->currentRow = 0;
     }
 
     public function current()

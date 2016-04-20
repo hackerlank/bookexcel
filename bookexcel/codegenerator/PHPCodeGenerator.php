@@ -60,6 +60,6 @@ class PHPCodeGenerator extends CodeGeneratorBase
             return $package;
         }
 
-        return '\\' . str_replace('.', '\\', $package);
+        return str_replace('.', '\\', $package);
     }
 }

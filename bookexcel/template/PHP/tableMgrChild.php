@@ -1,4 +1,4 @@
-﻿{%echo '<?php'%} 
+{%echo '<?php'%} 
 /**
  * You can modify this file for your purpose
  */

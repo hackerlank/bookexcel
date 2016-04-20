@@ -14,7 +14,9 @@ class CodeGeneratorBase implements ICodeGenerator
     protected $templateDir;
     protected $defaultParentClass = 'defaultParentClass';
     protected $defaultmanagerParentClass = 'defaultmanagerParentClass';
+    protected $managerClassSuffix = 'Mgr';
     protected $parentClassSuffix = 'CE';
+    protected $isCheckManagerParentClass = true;
 
     /**{
      * "package" : "bookrpg.cfg",
@@ -73,13 +75,14 @@ class CodeGeneratorBase implements ICodeGenerator
         $parentSuffix = $this->parentClassSuffix;
         $className = ucfirst($sheet['className']) . $sheet['codeSuffix'];
         $parentClassName = $sheet['parentClass'];
-        $managerClassName = $className . 'Mgr';
+        $managerClassName = $className . $this->managerClassSuffix;
         $managerParentClass = $sheet['managerParentClass'];
         $fields = $sheet['fields'];
         $keyTypes = $this->convertTypeAndGetPKey($fields);
+        $keyCount = count($keyTypes);
         $TItem = $className;
-        $TKey1 = count($keyTypes) > 0 ? $keyTypes[0] : '';
-        $TKey2 = count($keyTypes) > 1 ? $keyTypes[1] : '';
+        $TKey1 = $keyCount > 0 ? $keyTypes[0] : '';
+        $TKey2 = $keyCount > 1 ? $keyTypes[1] : '';
 
         //tpl may modify these vars for itself
         $filename = $className;
@@ -91,9 +94,45 @@ class CodeGeneratorBase implements ICodeGenerator
         ob_clean();
 
         $fileSavePath = $this->getFileSavePath($filename, $package, $tpl);
+
+        $basefilename = basename($fileSavePath);
+
+        if ($this->isCheckManagerParentClass &&
+            $this->checkManagerParentClass($managerParentClass, $keyCount) &&
+            strpos($str, $managerParentClass) !== false
+        ) {
+            Util::warning(sprintf(
+                '%s has %d key, %s seem not match it',
+                basename($fileSavePath),
+                $keyCount,
+                $managerParentClass
+            ));
+        }
+
         if ($override || !file_exists($fileSavePath)) {
             Util::saveToFile($fileSavePath, $str);
         }
+    }
+
+    protected function checkManagerParentClass($class, $keyCount)
+    {
+        $className = strtolower(str_replace('/.*[.\\\](?=\w+$)/', '', $class));
+        $warn = false;
+
+        if ($keyCount > 1) {
+            $warn = (strpos($className, 'double') === false &&
+                strpos($className, '2') === false);
+        } elseif ($keyCount == 1) {
+            $warn = (strpos($className, 'single') === false &&
+                strpos($className, '1') === false);
+        } elseif ($keyCount == 0) {
+            $warn = (strpos($className, 'single') !== false ||
+                strpos($className, '1') !== false ||
+                strpos($className, 'double') !== false ||
+                strpos($className, '2') !== false);
+        }
+
+        return $warn;
     }
 
     protected function convertTypeAndGetPKey(&$fields)

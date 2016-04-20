@@ -34,8 +34,8 @@ $params = array(
 
 $params['inputPath'] = 'test';
 $params['outputPath'] = '';
-$params['exportFormat'] = 'json';
-$params['codeType'] = 'c#';
+$params['exportFormat'] = 'txt';
+$params['codeType'] = 'C#';
 $params['codeSuffix'] = 'Cfg';
 $params['codeSavePath'] = '';
 $bk = new Bookexcel();
