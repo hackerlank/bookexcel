@@ -103,6 +103,12 @@ abstract class ConfigMgrBase
             $this->itemList[] = $item;
             $i++;
         }
+
+        ksort($this->itemSortList);
+        if ($keyCount == 2) {
+            array_walk($this->itemSortList, 'ksort');
+        }
+
         return true;
     }
 

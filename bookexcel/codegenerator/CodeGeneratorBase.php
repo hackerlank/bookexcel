@@ -118,7 +118,7 @@ class CodeGeneratorBase implements ICodeGenerator
 
     protected function checkManagerParentClass($class, $keyCount)
     {
-        $className = strtolower(str_replace('/.*[.\\\](?=\w+$)/', '', $class));
+        $className = strtolower(str_replace('/.*[\\\.](?=\w+$)/', '', $class));
         $warn = false;
 
         if ($keyCount > 1) {
