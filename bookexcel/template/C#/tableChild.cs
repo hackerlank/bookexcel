@@ -16,6 +16,19 @@ namespace {%$package%}
 {% endif; %}
     public class {%$managerClassName%} : {%:$managerClassName.$parentSuffix%} 
     {
+        private static {%$managerClassName%} instance;
+
+        public static {%$managerClassName%} IT
+        {
+            get
+            {
+                if(instance == null){
+                    instance = new {%$managerClassName%}();
+                }
+                return instance;
+            }
+        }
+
         public {%$managerClassName%}() : base()
         {
             //your code

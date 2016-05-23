@@ -9,6 +9,7 @@ class TXTConverter extends ConverterBase
 {
 
     const DELIMITER = "\t";
+    const ENDOFLINE = "\r\n";
 
     public function convertHeader(array $params)
     {
@@ -27,7 +28,7 @@ class TXTConverter extends ConverterBase
             unset($nameRow['itemType']);
         }
 
-        return implode(self::DELIMITER, $nameRow) . $convertParams['endOfLine'];
+        return implode(self::DELIMITER, $nameRow) . self::ENDOFLINE;
     }
 
     public function convertFooter(array $params)
@@ -45,12 +46,14 @@ class TXTConverter extends ConverterBase
         foreach ($dataRow as $k => $v) {
             $dataRow[$k] = $this->escape($v);
         }
-        return implode(self::DELIMITER, $dataRow) . $convertParams['endOfLine'];
+        return implode(self::DELIMITER, $dataRow) . self::ENDOFLINE;
     }
 
     //去掉tab
     private function escape($str)
     {
-        return str_replace(self::DELIMITER, '', $str);
+        $str = str_replace(self::DELIMITER, '    ', $str);
+        $str = str_replace(self::ENDOFLINE, "\n", $str);
+        return $str;
     }
 }
