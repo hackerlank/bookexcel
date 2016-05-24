@@ -26,14 +26,14 @@ namespace {%$package%}
     {
         public {%:$managerClassName.$parentSuffix%}()
         {
-            this.setParser(new {%:ucfirst($fileFormat)%}Parser());
+            this.SetParser(new {%:ucfirst($fileFormat)%}Parser());
             this.resourceName = "{%$exportFile%}";
         }
 
         {% 
-            $nameIndex = array_search('itemName', $nameRow);
-            $typeIndex = array_search('itemType', $nameRow);
-            $valueIndex = array_search('itemValue', $nameRow);
+            $nameIndex = Array_search('itemName', $nameRow);
+            $typeIndex = Array_search('itemType', $nameRow);
+            $valueIndex = Array_search('itemValue', $nameRow);
             foreach ($dataRow as $row): 
             $type = $this->convertType($row[$typeIndex]);
             $name = $row[$nameIndex];
@@ -41,15 +41,15 @@ namespace {%$package%}
         public {%$type%} {%$name%} { get; protected set; }
         {% endforeach; %}
 
-        public override bool init(string text, string format=null)
+        public override bool Init(string text, string format=null)
         {
-            if (base.init(text, format)) {
+            if (base.Init(text, format)) {
                 {% 
                     foreach ($dataRow as $row): 
                     $name = $row[$nameIndex];
                     $type = $this->convertType($row[$typeIndex]);
                 %}
-                this.{%$name%} = ({%$type%})getItem("{%$name%}").value;
+                this.{%$name%} = ({%$type%})GetItem("{%$name%}").value;
                 {% endforeach; %}
                 return true;
             }
@@ -63,30 +63,30 @@ namespace {%$package%}
         public object value;
 
         ///parse form {%$fileFormat%} 
-        public override bool parseFrom(IConfigParser parser)
+        public override bool ParseFrom(IConfigParser parser)
         {
             try{
                 switch (parser.currentRow) 
                 {
                     {%
-                        $nameIndex = array_search('itemName', $nameRow);
-                        $typeIndex = array_search('itemType', $nameRow);
-                        $valueIndex = array_search('itemValue', $nameRow);
+                        $nameIndex = Array_search('itemName', $nameRow);
+                        $typeIndex = Array_search('itemType', $nameRow);
+                        $valueIndex = Array_search('itemValue', $nameRow);
                         $i = -1;
                         foreach ($dataRow as $row): 
                         $i++;
                         $name = $row[$nameIndex];
-                        list($type, $arrDeep) = $this->convertType2($row[$typeIndex]);
-                        $get = 'getValue';
+                        List($type, $arrDeep) = $this->convertType2($row[$typeIndex]);
+                        $get = 'GetValue';
                         if ($arrDeep == 1) {
-                            $get = 'getList';
-                        } elseif($arrDeep > 1) {
-                            $get = 'getListGroup';
+                            $get = 'GetList';
+                        } Elseif($arrDeep > 1) {
+                            $get = 'GetListGroup';
                         }
                     %}
                     case {%$i%}:
                         this.key = "{%$name%}";
-                        if (parser.has(this.key)) {
+                        if (parser.Has(this.key)) {
                             this.value = parser.{%$get%}<{%$type%}>(this.key);
                         } else {
                             this.value = parser.{%$get%}<{%$type%}>("itemValue");

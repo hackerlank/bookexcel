@@ -34,9 +34,9 @@ namespace {%$package%}
             //your code
         }
 
-        public override bool init(string text, string format=null)
+        public override bool Init(string text, string format=null)
         {
-            if (base.init(text, format))
+            if (base.Init(text, format))
             {
                 //your code
                 return true;
@@ -50,9 +50,9 @@ namespace {%$package%}
     public class {%$className%} : {%:$className.$parentSuffix%} 
     {
         ///parse form {%$fileFormat%} 
-        public override bool parseFrom(IConfigParser parser)
+        public override bool ParseFrom(IConfigParser parser)
         {
-            if (base.parseFrom(parser))
+            if (base.ParseFrom(parser))
             {
                 //your code
                 return true;

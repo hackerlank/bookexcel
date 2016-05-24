@@ -12,24 +12,24 @@ namespace bookrpg.config
     {
         int currentRow { get; }
 
-        void setArrayDelemiter(char delimi, char innerDelimi);
+        void SetArrayDelemiter(char delimi, char innerDelimi);
 
-        bool parseString(string content);
+        bool ParseString(string content);
 
-        bool has(string columnName);
+        bool Has(string columnName);
 
-        bool has(int columnIndex);
+        bool Has(int columnIndex);
 
-        T getValue<T>(string columnName);
+        T GetValue<T>(string columnName);
 
-        T getValue<T>(int columnIndex);
+        T GetValue<T>(int columnIndex);
 
-        T[] getList<T>(string columnName);
+        T[] GetList<T>(string columnName);
 
-        T[] getList<T>(int columnIndex);
+        T[] GetList<T>(int columnIndex);
 
-        T[][] getListGroup<T>(string columnName);
+        T[][] GetListGroup<T>(string columnName);
 
-        T[][] getListGroup<T>(int columnIndex);
+        T[][] GetListGroup<T>(int columnIndex);
     }
 }

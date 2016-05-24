@@ -12,7 +12,7 @@ namespace bookrpg.config
 {
     public class ParseUtil
     {
-        public static string[] getList(string content, char delimi = ';')
+        public static string[] GetList(string content, char delimi = ';')
         {
             if (string.IsNullOrEmpty(content))
             {
@@ -21,7 +21,7 @@ namespace bookrpg.config
             return content.Split(new char[]{ delimi });
         }
 
-        public static string[][] getListGroup(string content, char delimi = ';', char innerDelimi = ':')
+        public static string[][] GetListGroup(string content, char delimi = ';', char innerDelimi = ':')
         {
             if (string.IsNullOrEmpty(content))
             {
@@ -39,7 +39,7 @@ namespace bookrpg.config
             return rtv;
         }
 
-        public static T[] getList<T>(string content, char delimi = ';')
+        public static T[] GetList<T>(string content, char delimi = ';')
         {
             var arr = content.Split(new char[]{ delimi });
             var tarr = new T[arr.Length];
@@ -52,7 +52,7 @@ namespace bookrpg.config
             return tarr;
         }
 
-        public static T[][] getListGroup<T>(string content, char delimi = ';', char innerDelimi = ':')
+        public static T[][] GetListGroup<T>(string content, char delimi = ';', char innerDelimi = ':')
         {
             if (string.IsNullOrEmpty(content))
             {

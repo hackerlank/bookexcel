@@ -30,14 +30,14 @@ namespace bookrpg.config
             innerArrayDelimiter = ':';
         }
 
-        public bool parseString(string content)
+        public bool ParseString(string content)
         {
             if (string.IsNullOrEmpty(content))
             {
                 return false;
             }
 
-            string[] arr = content.Split(new char[]{ '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] arr = content.Split(new string[]{ "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
             title = arr [0].Split(new char[]{ '\t' });
 
             body = new List<string[]>();
@@ -51,75 +51,75 @@ namespace bookrpg.config
             return true;
         }
 
-        public void setArrayDelemiter(char delimi, char innerDelimi)
+        public void SetArrayDelemiter(char delimi, char innerDelimi)
         {
             arrayDelimiter = delimi;
             innerArrayDelimiter = innerDelimi;
         }
 
-        public bool has(string columnName)
+        public bool Has(string columnName)
         {
-            return this.has(Array.IndexOf(title, columnName));
+            return this.Has(Array.IndexOf(title, columnName));
         }
 
-        public bool has(int columnIndex)
+        public bool Has(int columnIndex)
         {
             var row = body [currentRow];
             return columnIndex >= 0 && columnIndex < row.Length;
         }
 
-        public T getValue<T>(string columnName)
+        public T GetValue<T>(string columnName)
         {
-            return this.getValue<T>(Array.IndexOf(title, columnName));
+            return this.GetValue<T>(Array.IndexOf(title, columnName));
         }
 
-        public T getValue<T>(int columnIndex)
+        public T GetValue<T>(int columnIndex)
         {
-            string str = this.getColumnValue(columnIndex);
+            string str = this.GetColumnValue(columnIndex);
             Type t = typeof(T);
             try
             {
                 if (t == typeof(bool)){
-                    return (T)Convert.ChangeType(convertToBool(str), t);
+                    return (T)Convert.ChangeType(ConvertToBool(str), t);
                 }
                 return (T)Convert.ChangeType(str, t);
             } catch (Exception e)
             {
                 throw new ConfigException(
-                    string.Format("TxtParser: cannot convert to {0} at row({1}) and column({2})", 
+                    string.Format("TxtParser: cannot convert to {0} at Row({1}) and Column({2})", 
                         typeof(T), currentRow, columnIndex), e);
             }
         }
 
-        public string getString(string columnName)
+        public string GetString(string columnName)
         {
-            return getColumnValue(Array.IndexOf(title, columnName));
+            return GetColumnValue(Array.IndexOf(title, columnName));
         }
 
-        public string getString(int columnIndex)
+        public string GetString(int columnIndex)
         {
-            return getColumnValue(columnIndex);
+            return GetColumnValue(columnIndex);
         }
 
-        public bool getBool(string columnName)
+        public bool GetBool(string columnName)
         {
-            return getBool(Array.IndexOf(title, columnName));
+            return GetBool(Array.IndexOf(title, columnName));
         }
 
-        public bool getBool(int columnIndex)
+        public bool GetBool(int columnIndex)
         {
             try
             {
-                return convertToBool(getColumnValue(columnIndex));
+                return ConvertToBool(GetColumnValue(columnIndex));
             } catch (Exception e)
             {
                 throw new ConfigException(
-                    string.Format("TxtParser: cannot convert to bool at row({0}) and column({1})", 
+                    string.Format("TxtParser: cannot convert to bool at Row({0}) and Column({1})", 
                         currentRow, columnIndex), e);
             }
         }
 
-        private bool convertToBool(string val)
+        private bool ConvertToBool(string val)
         {
             if (val.Equals("0"))
             {
@@ -133,153 +133,153 @@ namespace bookrpg.config
             }
         }
 
-        public int getInt(string columnName)
+        public int GetInt(string columnName)
         {
-            return getInt(Array.IndexOf(title, columnName));
+            return GetInt(Array.IndexOf(title, columnName));
         }
 
-        public int getInt(int columnIndex)
+        public int GetInt(int columnIndex)
         {
             try
             {
-                return Convert.ToInt32(getColumnValue(columnIndex));
+                return Convert.ToInt32(GetColumnValue(columnIndex));
             } catch (Exception e)
             {
                 throw new ConfigException(
-                    string.Format("TxtParser: cannot convert to int32 at row({0}) and column({1})", 
+                    string.Format("TxtParser: cannot convert to int32 at Row({0}) and Column({1})", 
                         currentRow, columnIndex), e);
             }
         }
 
-        public uint getUInt(string columnName)
+        public uint GetUInt(string columnName)
         {
-            return getUInt(Array.IndexOf(title, columnName));
+            return GetUInt(Array.IndexOf(title, columnName));
         }
 
-        public uint getUInt(int columnIndex)
+        public uint GetUInt(int columnIndex)
         {
             try
             {
-                return Convert.ToUInt32(getColumnValue(columnIndex));
+                return Convert.ToUInt32(GetColumnValue(columnIndex));
             } catch (Exception e)
             {
                 throw new ConfigException(
-                    string.Format("TxtParser: cannot convert to uint32 at row({0}) and column({1})", 
+                    string.Format("TxtParser: cannot convert to uint32 at Row({0}) and Column({1})", 
                         currentRow, columnIndex), e);
             }
         }
 
-        public double getDouble(string columnName)
+        public double GetDouble(string columnName)
         {
-            return getDouble(Array.IndexOf(title, columnName));
+            return GetDouble(Array.IndexOf(title, columnName));
         }
 
-        public double getDouble(int columnIndex)
+        public double GetDouble(int columnIndex)
         {
             try
             {
-                return Convert.ToDouble(getColumnValue(columnIndex));
+                return Convert.ToDouble(GetColumnValue(columnIndex));
             } catch (Exception e)
             {
                 throw new ConfigException(
-                    string.Format("TxtParser: cannot convert to double at row({0}) and column({1})", 
+                    string.Format("TxtParser: cannot convert to double at Row({0}) and Column({1})", 
                         currentRow, columnIndex), e);
             }
         }
 
-        public float getFloat(string columnName)
+        public float GetFloat(string columnName)
         {
-            return (float)getDouble(columnName);
+            return (float)GetDouble(columnName);
         }
 
-        public float getFloat(int columnIndex)
+        public float GetFloat(int columnIndex)
         {
-            return (float)getDouble(columnIndex);
+            return (float)GetDouble(columnIndex);
         }
 
-        public float getLong(string columnName)
+        public float GetLong(string columnName)
         {
-            return getLong(Array.IndexOf(title, columnName));
+            return GetLong(Array.IndexOf(title, columnName));
         }
 
-        public float getLong(int columnIndex)
+        public float GetLong(int columnIndex)
         {
             try
             {
-                return Convert.ToInt64(getColumnValue(columnIndex));
+                return Convert.ToInt64(GetColumnValue(columnIndex));
             } catch (Exception e)
             {
                 throw new ConfigException(
-                    string.Format("TxtParser: cannot convert to long at row({0}) and column({1})", 
+                    string.Format("TxtParser: cannot convert to long at Row({0}) and Column({1})", 
                         currentRow, columnIndex), e);
             }
         }
 
-        public string[] getList(string columnName)
+        public string[] GetList(string columnName)
         {
-            return getList(Array.IndexOf(title, columnName));
+            return GetList(Array.IndexOf(title, columnName));
         }
 
-        public string[] getList(int columnIndex)
+        public string[] GetList(int columnIndex)
         {
-            return ParseUtil.getList(getColumnValue(columnIndex), arrayDelimiter);
+            return ParseUtil.GetList(GetColumnValue(columnIndex), arrayDelimiter);
         }
 
-        public string[][] getListGroup(string columnName)
+        public string[][] GetListGroup(string columnName)
         {
-            return getListGroup(Array.IndexOf(title, columnName));
+            return GetListGroup(Array.IndexOf(title, columnName));
         }
 
-        public string[][] getListGroup(int columnIndex)
+        public string[][] GetListGroup(int columnIndex)
         {
-            return ParseUtil.getListGroup(getColumnValue(columnIndex), 
+            return ParseUtil.GetListGroup(GetColumnValue(columnIndex), 
                 arrayDelimiter, innerArrayDelimiter);
         }
 
-        public T[] getList<T>(string columnName)
+        public T[] GetList<T>(string columnName)
         {
-            return getList<T>(Array.IndexOf(title, columnName));
+            return GetList<T>(Array.IndexOf(title, columnName));
         }
 
-        public T[] getList<T>(int columnIndex)
+        public T[] GetList<T>(int columnIndex)
         {
             try
             {
-                return ParseUtil.getList<T>(getColumnValue(columnIndex), arrayDelimiter);
+                return ParseUtil.GetList<T>(GetColumnValue(columnIndex), arrayDelimiter);
             } catch (Exception e)
             {
                 throw new ConfigException(
-                    string.Format("TxtParser: cannot convert to array at row({0}) and column({1})", 
+                    string.Format("TxtParser: cannot convert to array at Row({0}) and Column({1})", 
                         currentRow, columnIndex), e);
             }
         }
 
-        public T[][] getListGroup<T>(string columnName)
+        public T[][] GetListGroup<T>(string columnName)
         {
-            return getListGroup<T>(Array.IndexOf(title, columnName));
+            return GetListGroup<T>(Array.IndexOf(title, columnName));
         }
 
-        public T[][] getListGroup<T>(int columnIndex)
+        public T[][] GetListGroup<T>(int columnIndex)
         {
             try
             {
-                return ParseUtil.getListGroup<T>(getColumnValue(columnIndex), 
+                return ParseUtil.GetListGroup<T>(GetColumnValue(columnIndex), 
                     arrayDelimiter, innerArrayDelimiter);
             } catch (Exception e)
             {
                 throw new ConfigException(
-                    string.Format("TxtParser: cannot convert to array at row({0}) and column({1})", 
+                    string.Format("TxtParser: cannot convert to array at Row({0}) and Column({1})", 
                         currentRow, columnIndex), e);
             }
         }
 
-        private string getColumnValue(int columnIndex)
+        private string GetColumnValue(int columnIndex)
         {
             var row = body [currentRow];
             if (columnIndex < 0 || columnIndex >= row.Length)
             {
                 throw new ConfigException(
-                    string.Format("TxtParser: cannot read at row({0}) and column({1})", currentRow, columnIndex));
+                    string.Format("TxtParser: cannot read at Row({0}) and Column({1})", currentRow, columnIndex));
             }
             return row [columnIndex];
         }

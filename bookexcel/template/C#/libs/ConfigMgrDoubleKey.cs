@@ -19,7 +19,7 @@ namespace bookrpg.config
         protected SortedList<TKey1, SortedList<TKey2, TItem>> itemSortList = 
             new SortedList<TKey1, SortedList<TKey2, TItem>>();
 
-        public override bool init(string text, string format = null)
+        public override bool Init(string text, string format = null)
         {
             if (string.IsNullOrEmpty(text))
             {
@@ -34,14 +34,14 @@ namespace bookrpg.config
                 itemList.Clear();
             }
 
-            var parser = getParser(format);
+            var parser = GetParser(format);
             if (parser == null)
             {
                 Debug.LogErrorFormat("Failed to init: {0}, no parser for format: {1}", this.ToString(), format);
                 return false;
             }
 
-            if (!parser.parseString(text))
+            if (!parser.ParseString(text))
             {
                 Debug.LogErrorFormat("Failed to init: {0}, cannot parse {1} text", this.ToString(), format);
                 return false;
@@ -52,23 +52,23 @@ namespace bookrpg.config
             foreach (var tp in parser)
             {
                 TItem item = new TItem();
-                if (!item.parseFrom(tp as IConfigParser))
+                if (!item.ParseFrom(tp as IConfigParser))
                 {
-                    Debug.LogErrorFormat("Failed to init:{0}, error at row({1})", 
+                    Debug.LogErrorFormat("Failed to init:{0}, error at Row({1})", 
                         this.ToString(), i);
                     continue;
                 }
 
-                TKey1 key = (TKey1)item.getKey();
-                TKey2 key2 = (TKey2)item.getSecondKey();
+                TKey1 key = (TKey1)item.GetKey();
+                TKey2 key2 = (TKey2)item.GetSecondKey();
 
-                if (getItemGroup(key) == null)
+                if (GetItemGroup(key) == null)
                 {
                     itemSortList.Add(key, new SortedList<TKey2, TItem>());
                     itemSortList[key].Add(key2, item);
                 } else if (itemSortList[key].ContainsKey(key2))
                 {
-                    Debug.LogWarningFormat("init:{0}, multi key1:({1}) key2(2) at row({3})", 
+                    Debug.LogWarningFormat("init:{0}, multi key1:({1}) Key2(2) at Row({3})", 
                         this.ToString(), key, key2, i);
                     itemSortList[key][key2] = item;
                 } else
@@ -82,12 +82,12 @@ namespace bookrpg.config
             return true;
         }
 
-        public virtual IDictionary<TKey1, SortedList<TKey2, TItem>> getAllSortedItems()
+        public virtual IDictionary<TKey1, SortedList<TKey2, TItem>> GetAllSortedItems()
         {
             return new SortedList<TKey1, SortedList<TKey2, TItem>>(itemSortList);
         }
 
-        public virtual TItem getItem(TKey1 key1, TKey2 key2)
+        public virtual TItem GetItem(TKey1 key1, TKey2 key2)
         {
             if (itemSortList.ContainsKey(key1) && itemSortList[key1].ContainsKey(key2))
             {
@@ -96,7 +96,7 @@ namespace bookrpg.config
             return default(TItem);
         }
 
-        public virtual IDictionary<TKey2, TItem> getItemGroup(TKey1 key1)
+        public virtual IDictionary<TKey2, TItem> GetItemGroup(TKey1 key1)
         {
             if (itemSortList.ContainsKey(key1))
             {
@@ -105,24 +105,24 @@ namespace bookrpg.config
             return null;
         }
 
-        public virtual bool hasItem(TKey1 key1, TKey2 key2)
+        public virtual bool HasItem(TKey1 key1, TKey2 key2)
         {
             return itemSortList.ContainsKey(key1) && itemSortList[key1].ContainsKey(key2);
         }
 
-        public virtual bool hasItemGroup(TKey1 key1)
+        public virtual bool HasItemGroup(TKey1 key1)
         {
             return itemSortList.ContainsKey(key1);
         }
 
         public virtual IDictionary<TKey2, TItem> this [TKey1 key1]
         {
-            get { return getItemGroup(key1); }
+            get { return GetItemGroup(key1); }
         }
 
         public virtual TItem this [TKey1 key1, TKey2 key2]
         {
-            get { return getItem(key1, key2); }
+            get { return GetItem(key1, key2); }
         }
     }
 }

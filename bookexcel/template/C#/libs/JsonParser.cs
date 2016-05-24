@@ -28,7 +28,7 @@ namespace bookrpg.config
         {
         }
 
-        public bool parseString(string content)
+        public bool ParseString(string content)
         {
             Reset();
             try
@@ -42,13 +42,13 @@ namespace bookrpg.config
             }
         }
 
-        public void setArrayDelemiter(char delimi, char innerDelimi)
+        public void SetArrayDelemiter(char delimi, char innerDelimi)
         {
             arrayDelimiter = delimi;
             innerArrayDelimiter = innerDelimi;
         }
 
-        public bool has(string columnName)
+        public bool Has(string columnName)
         {
             try
             {
@@ -59,13 +59,13 @@ namespace bookrpg.config
             }
         }
 
-        public bool has(int columnIndex)
+        public bool Has(int columnIndex)
         {
             var row = data [currentRow];
             return columnIndex >= 0 && columnIndex < row.Count;
         }
 
-        public T getValue<T>(string columnName)
+        public T GetValue<T>(string columnName)
         {
             Type t = typeof(T);
             try
@@ -74,12 +74,12 @@ namespace bookrpg.config
             } catch (Exception e)
             {
                 throw new ConfigException(
-                    string.Format("JsonParser: cannot convert to {0} at row({1}) and column({2})", 
+                    string.Format("JsonParser: cannot convert to {0} at Row({1}) and Column({2})", 
                         typeof(T), currentRow, columnName), e);
             }
         }
 
-        public T getValue<T>(int columnIndex)
+        public T GetValue<T>(int columnIndex)
         {
             Type t = typeof(T);
             try
@@ -88,82 +88,82 @@ namespace bookrpg.config
             } catch (Exception e)
             {
                 throw new ConfigException(
-                    string.Format("JsonParser: cannot convert to {0} at row({1}) and column({2})", 
+                    string.Format("JsonParser: cannot convert to {0} at Row({1}) and Column({2})", 
                         typeof(T), currentRow, columnIndex), e);
             }
         }
 
-        public string getString(string columnName)
+        public string GetString(string columnName)
         {
             return (string)data[currentRow][columnName];
         }
 
-        public string getString(int columnIndex)
+        public string GetString(int columnIndex)
         {
             return (string)data[currentRow][columnIndex];
         }
 
-        public bool getBool(string columnName)
+        public bool GetBool(string columnName)
         {
             return (bool)data[currentRow][columnName];
         }
 
-        public bool getBool(int columnIndex)
+        public bool GetBool(int columnIndex)
         {
             return (bool)data[currentRow][columnIndex];
         }
 
-        public int getInt(string columnName)
+        public int GetInt(string columnName)
         {
             return (int)data[currentRow][columnName];
         }
 
-        public int getInt(int columnIndex)
+        public int GetInt(int columnIndex)
         {
             return (int)data[currentRow][columnIndex];
         }
 
-        public uint getUInt(string columnName)
+        public uint GetUInt(string columnName)
         {
             return (uint)data[currentRow][columnName];
         }
 
-        public uint getUInt(int columnIndex)
+        public uint GetUInt(int columnIndex)
         {
             return (uint)data[currentRow][columnIndex];
         }
 
-        public double getDouble(string columnName)
+        public double GetDouble(string columnName)
         {
             return (double)data[currentRow][columnName];
         }
 
-        public double getDouble(int columnIndex)
+        public double GetDouble(int columnIndex)
         {
             return (double)data[currentRow][columnIndex];
         }
 
-        public float getFloat(string columnName)
+        public float GetFloat(string columnName)
         {
             return (float)data[currentRow][columnName];
         }
 
-        public float getFloat(int columnIndex)
+        public float GetFloat(int columnIndex)
         {
             return (float)data[currentRow][columnIndex];
         }
 
-        public float getLong(string columnName)
+        public float GetLong(string columnName)
         {
             return (long)data[currentRow][columnName];
         }
 
-        public float getLong(int columnIndex)
+        public float GetLong(int columnIndex)
         {
             return (long)data[currentRow][columnIndex];
         }
 
-        public T[] getList<T>(string columnName)
+        public T[] GetList<T>(string columnName)
         {
             try
             {
@@ -179,12 +179,12 @@ namespace bookrpg.config
             } catch (Exception e)
             {
                 throw new ConfigException(
-                    string.Format("JsonParser: cannot convert to {0} at row({1}) and column({2})", 
+                    string.Format("JsonParser: cannot convert to {0} at Row({1}) and Column({2})", 
                         typeof(T), currentRow, columnName), e);
             }
         }
 
-        public T[] getList<T>(int columnIndex)
+        public T[] GetList<T>(int columnIndex)
         {
             try
             {
@@ -200,12 +200,12 @@ namespace bookrpg.config
             } catch (Exception e)
             {
                 throw new ConfigException(
-                    string.Format("JsonParser: cannot convert to {0} at row({1}) and column({2})", 
+                    string.Format("JsonParser: cannot convert to {0} at Row({1}) and Column({2})", 
                         typeof(T), currentRow, columnIndex), e);
             }
         }
 
-        public T[][] getListGroup<T>(string columnName)
+        public T[][] GetListGroup<T>(string columnName)
         {
             try
             {
@@ -227,12 +227,12 @@ namespace bookrpg.config
             } catch (Exception e)
             {
                 throw new ConfigException(
-                    string.Format("JsonParser: cannot convert to {0} at row({1}) and column({2})", 
+                    string.Format("JsonParser: cannot convert to {0} at Row({1}) and Column({2})", 
                         typeof(T), currentRow, columnName), e);
             }
         }
 
-        public T[][] getListGroup<T>(int columnIndex)
+        public T[][] GetListGroup<T>(int columnIndex)
         {
             try
             {
@@ -254,7 +254,7 @@ namespace bookrpg.config
             } catch (Exception e)
             {
                 throw new ConfigException(
-                    string.Format("JsonParser: cannot convert to {0} at row({1}) and column({2})", 
+                    string.Format("JsonParser: cannot convert to {0} at Row({1}) and Column({2})", 
                         typeof(T), currentRow, columnIndex), e);
             }
         }

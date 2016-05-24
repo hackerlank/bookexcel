@@ -18,17 +18,17 @@ namespace bookrpg.config
         {
         }
 
-        public virtual bool parseFrom(IConfigParser parser)
+        public virtual bool ParseFrom(IConfigParser parser)
         {
             throw new NotImplementedException();
         }
 
-        public virtual object getKey()
+        public virtual object GetKey()
         {
             return _key1;
         }
 
-        public virtual object getSecondKey()
+        public virtual object GetSecondKey()
         {
             return _key2;
         }

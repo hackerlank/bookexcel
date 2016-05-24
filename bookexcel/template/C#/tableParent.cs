@@ -27,19 +27,19 @@ namespace {%$package%}
         public {%:$managerClassName.$parentSuffix%}()
         {
             var parser = new {%:ucfirst($fileFormat)%}Parser();
-            parser.setArrayDelemiter('{%$arrayDelimiter%}', '{%$innerArrayDelimiter%}');
-            this.setParser(parser);
+            parser.SetArrayDelemiter('{%$arrayDelimiter%}', '{%$innerArrayDelimiter%}');
+            this.SetParser(parser);
             this.resourceName = "{%$exportFile%}";
         }
 
         {% 
             foreach ($fields as $field): 
-            list($type, $arrDeep) = $this->convertType2($field['type']);
+            List($type, $arrDeep) = $this->convertType2($field['type']);
             if ($field['createQuery'] && $arrDeep == 0) :
             $name = $field['name'];
-            $uname = ucfirst($name);
+            $uname = Ucfirst($name);
         %}
-        public {%$className%} getItemBy{%$uname%}({%$type%} value)
+        public {%$className%} GetItemBy{%$uname%}({%$type%} value)
         {
             foreach (var item in itemList) 
             {
@@ -51,7 +51,7 @@ namespace {%$package%}
             return null;
         }
 
-        public IList<{%$className%}> getItemsBy{%$uname%}({%$type%} value)
+        public IList<{%$className%}> GetItemsBy{%$uname%}({%$type%} value)
         {
             var items = new List<{%$className%}>();
             foreach (var item in itemList) 
@@ -79,7 +79,7 @@ namespace {%$package%}
         {% endforeach; %}
 
         ///parse form {%$fileFormat%} 
-        public override bool parseFrom(IConfigParser parser)
+        public override bool ParseFrom(IConfigParser parser)
         {
             try{
                 {% 
@@ -87,12 +87,12 @@ namespace {%$package%}
                     foreach ($fields as $field): 
                     $name = $field['name'];
                     $uname = Util::camelToConst($name);
-                    list($type, $arrDeep) = $this->convertType2($field['type']);
-                    $get = 'getValue';
+                    List($type, $arrDeep) = $this->convertType2($field['type']);
+                    $get = 'GetValue';
                     if ($arrDeep == 1) {
-                        $get = 'getList';
-                    } elseif($arrDeep > 1) {
-                        $get = 'getListGroup';
+                        $get = 'GetList';
+                    } Elseif($arrDeep > 1) {
+                        $get = 'GetListGroup';
                     }
                     $isPkey = $field['isPrimaryKey'];
                     $pkey += $isPkey ? 1 : 0;

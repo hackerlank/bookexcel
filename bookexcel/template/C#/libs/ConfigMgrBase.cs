@@ -21,7 +21,7 @@ namespace bookrpg.config
 
         public string resourceName;
 
-        public virtual bool init(string text, string format=null)
+        public virtual bool Init(string text, string format=null)
         {
             if (string.IsNullOrEmpty(text))
             {
@@ -35,14 +35,14 @@ namespace bookrpg.config
                 itemList.Clear();
             }
 
-            var parser = getParser(format);
+            var parser = GetParser(format);
             if (parser == null)
             {
                 Debug.LogErrorFormat("Failed to init: {0}, no parser for format: {1}", this.ToString(), format);
                 return false;
             }
 
-            if (!parser.parseString(text))
+            if (!parser.ParseString(text))
             {
                 Debug.LogErrorFormat("Failed to init: {0}, cannot parse {1} text", this.ToString(), format);
                 return false;
@@ -53,9 +53,9 @@ namespace bookrpg.config
             foreach(var tp in parser)
             {
                 TItem item = new TItem();
-                if (!item.parseFrom(tp as IConfigParser))
+                if (!item.ParseFrom(tp as IConfigParser))
                 {
-                    Debug.LogErrorFormat("Failed to init:{0}, error at row({1})", 
+                    Debug.LogErrorFormat("Failed to init:{0}, error at Row({1})", 
                         this.ToString(), i);
                     continue;
                 }
@@ -65,7 +65,7 @@ namespace bookrpg.config
             return true;
         }
 
-        protected IConfigParser getParser(string format)
+        protected IConfigParser GetParser(string format)
         {
             switch(format){
                 case "txt":
@@ -81,12 +81,12 @@ namespace bookrpg.config
             return this.parser;
         }
 
-        public void setParser(IConfigParser parser)
+        public void SetParser(IConfigParser parser)
         {
             this.parser = parser;
         }
 
-        public virtual IList<TItem> getAllItems()
+        public virtual IList<TItem> GetAllItems()
         {
             return new List<TItem>(itemList);
         }

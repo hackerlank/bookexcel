@@ -18,7 +18,7 @@ namespace bookrpg.config
     {
         protected SortedList<TKey, TItem> itemSortList = new SortedList<TKey, TItem>();
 
-        public override bool init(string text, string format=null)
+        public override bool Init(string text, string format=null)
         {
             if (string.IsNullOrEmpty(text))
             {
@@ -33,14 +33,14 @@ namespace bookrpg.config
                 itemList.Clear();
             }
 
-            var parser = getParser(format);
+            var parser = GetParser(format);
             if (parser == null)
             {
                 Debug.LogErrorFormat("Failed to init: {0}, no parser for format: {1}", this.ToString(), format);
                 return false;
             }
 
-            if (!parser.parseString(text))
+            if (!parser.ParseString(text))
             {
                 Debug.LogErrorFormat("Failed to init: {0}, cannot parse {1} text", this.ToString(), format);
                 return false;
@@ -51,16 +51,16 @@ namespace bookrpg.config
             foreach(var tp in parser)
             {
                 TItem item = new TItem();
-                if (!item.parseFrom(tp as IConfigParser))
+                if (!item.ParseFrom(tp as IConfigParser))
                 {
-                    Debug.LogErrorFormat("Failed to init:{0}, error at row({1})", 
+                    Debug.LogErrorFormat("Failed to init:{0}, error at Row({1})", 
                         this.ToString(), i);
                     continue;
                 }
-                TKey key = (TKey)item.getKey();
+                TKey key = (TKey)item.GetKey();
                 if (itemSortList.ContainsKey(key))
                 {
-                    Debug.LogWarningFormat("init:{0}, multi key({1}) at row({2})", 
+                    Debug.LogWarningFormat("init:{0}, multi Key({1}) at Row({2})", 
                         this.ToString(), key, i);
                     itemSortList [key] = item;
                 } else
@@ -73,12 +73,12 @@ namespace bookrpg.config
             return true;
         }
 
-        public virtual IDictionary<TKey, TItem> getAllSortedItems()
+        public virtual IDictionary<TKey, TItem> GetAllSortedItems()
         {
             return new SortedList<TKey, TItem>(itemSortList);
         }
 
-        public virtual TItem getItem(TKey key)
+        public virtual TItem GetItem(TKey key)
         {
             if (itemSortList.ContainsKey(key))
             {
@@ -87,14 +87,14 @@ namespace bookrpg.config
             return default(TItem);
         }
 
-        public virtual bool hasItem(TKey key)
+        public virtual bool HasItem(TKey key)
         {
             return itemSortList.ContainsKey(key);
         }
 
         public virtual TItem this [TKey key]
         {
-            get { return getItem(key); }
+            get { return GetItem(key); }
         }
 
     }
