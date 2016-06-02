@@ -7,7 +7,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using LitJson;
-using bookrpg.config;
+using bookrpg.data;
 using UnityEngine;
 
 {%$filename = $className.$parentSuffix;%}
@@ -63,7 +63,7 @@ namespace {%$package%}
         public object value;
 
         ///parse form {%$fileFormat%} 
-        public override bool ParseFrom(IConfigParser parser)
+        public override bool ParseFrom(IDataParser parser)
         {
             try{
                 switch (parser.currentRow) 

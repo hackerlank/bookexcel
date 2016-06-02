@@ -5,7 +5,7 @@
  * @license The MIT License
  */
 
-class ConfigException extends \Exception
+class DataException extends \Exception
 {
 
 }

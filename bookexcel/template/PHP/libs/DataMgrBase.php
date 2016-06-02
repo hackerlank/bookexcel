@@ -5,7 +5,7 @@
  * @license The MIT License
  */
 
-abstract class ConfigMgrBase
+abstract class DataMgrBase
 {
     /**
      * ex: Sheet.txt
@@ -24,7 +24,7 @@ abstract class ConfigMgrBase
     protected $itemList = array();
 
     /**
-     * @var IConfigParser
+     * @var IDataParser
      */
     protected $parser;
 
@@ -128,7 +128,7 @@ abstract class ConfigMgrBase
         return $this->parser;
     }
 
-    public function setParser(IConfigParser $parser)
+    public function setParser(IDataParser $parser)
     {
         $this->parser = $parser;
     }

@@ -5,7 +5,7 @@
  * @license The MIT License
  */
 
-abstract class ConfigMgrDoubleKey extends ConfigMgrBase
+abstract class DataMgrDoubleKey extends DataMgrBase
 {
 
     public function init($text, $format = '')

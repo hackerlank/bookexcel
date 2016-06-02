@@ -11,10 +11,10 @@ using UnityEngine;
 using LitJson;
 using bookrpg.log;
 
-namespace bookrpg.config
+namespace bookrpg.data
 {
-    public abstract class ConfigMgrSingleKey<TKey, TItem> : ConfigMgrBase<TItem>
-        where TItem : ConfigItemBase, new()
+    public abstract class DataMgrSingleKey<TKey, TItem> : DataMgrBase<TItem>
+        where TItem : DataItemBase, new()
     {
         protected SortedList<TKey, TItem> itemSortList = new SortedList<TKey, TItem>();
 
@@ -51,7 +51,7 @@ namespace bookrpg.config
             foreach(var tp in parser)
             {
                 TItem item = new TItem();
-                if (!item.ParseFrom(tp as IConfigParser))
+                if (!item.ParseFrom(tp as IDataParser))
                 {
                     Debug.LogErrorFormat("Failed to init:{0}, error at Row({1})", 
                         this.ToString(), i);

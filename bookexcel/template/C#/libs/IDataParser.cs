@@ -6,9 +6,9 @@
 
 using System.Collections;
 
-namespace bookrpg.config
+namespace bookrpg.data
 {
-    public interface IConfigParser : ICollection, IEnumerable
+    public interface IDataParser : ICollection, IEnumerable
     {
         int currentRow { get; }
 

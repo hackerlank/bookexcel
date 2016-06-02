@@ -6,7 +6,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using LitJson;
-using bookrpg.config;
+using bookrpg.data;
 using UnityEngine;
 
 {%$filename = $className; $override=false;%}
@@ -50,7 +50,7 @@ namespace {%$package%}
     public class {%$className%} : {%:$className.$parentSuffix%} 
     {
         ///parse form {%$fileFormat%} 
-        public override bool ParseFrom(IConfigParser parser)
+        public override bool ParseFrom(IDataParser parser)
         {
             if (base.ParseFrom(parser))
             {

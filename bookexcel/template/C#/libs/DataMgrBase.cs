@@ -11,13 +11,13 @@ using UnityEngine;
 using LitJson;
 using bookrpg.log;
 
-namespace bookrpg.config
+namespace bookrpg.data
 {
-    public abstract class ConfigMgrBase<TItem>
-        where TItem : ConfigItemBase, new()
+    public abstract class DataMgrBase<TItem>
+        where TItem : DataItemBase, new()
     {
         protected IList<TItem> itemList = new List<TItem>();
-        protected IConfigParser parser;
+        protected IDataParser parser;
 
         public string resourceName;
 
@@ -53,7 +53,7 @@ namespace bookrpg.config
             foreach(var tp in parser)
             {
                 TItem item = new TItem();
-                if (!item.ParseFrom(tp as IConfigParser))
+                if (!item.ParseFrom(tp as IDataParser))
                 {
                     Debug.LogErrorFormat("Failed to init:{0}, error at Row({1})", 
                         this.ToString(), i);
@@ -65,7 +65,7 @@ namespace bookrpg.config
             return true;
         }
 
-        protected IConfigParser GetParser(string format)
+        protected IDataParser GetParser(string format)
         {
             switch(format){
                 case "txt":
@@ -81,7 +81,7 @@ namespace bookrpg.config
             return this.parser;
         }
 
-        public void SetParser(IConfigParser parser)
+        public void SetParser(IDataParser parser)
         {
             this.parser = parser;
         }

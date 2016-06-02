@@ -8,12 +8,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace bookrpg.config
+namespace bookrpg.data
 {
     /// <summary>
     /// Parse tab delimited string, much like csv
     /// </summary>
-    public class TxtParser : IConfigParser, ICollection, IEnumerable, IEnumerator
+    public class TxtParser : IDataParser, ICollection, IEnumerable, IEnumerator
     {
         private string[] title;
         private List<string[]> body;
@@ -85,7 +85,7 @@ namespace bookrpg.config
                 return (T)Convert.ChangeType(str, t);
             } catch (Exception e)
             {
-                throw new ConfigException(
+                throw new DataException(
                     string.Format("TxtParser: cannot convert to {0} at Row({1}) and Column({2})", 
                         typeof(T), currentRow, columnIndex), e);
             }
@@ -113,7 +113,7 @@ namespace bookrpg.config
                 return ConvertToBool(GetColumnValue(columnIndex));
             } catch (Exception e)
             {
-                throw new ConfigException(
+                throw new DataException(
                     string.Format("TxtParser: cannot convert to bool at Row({0}) and Column({1})", 
                         currentRow, columnIndex), e);
             }
@@ -145,7 +145,7 @@ namespace bookrpg.config
                 return Convert.ToInt32(GetColumnValue(columnIndex));
             } catch (Exception e)
             {
-                throw new ConfigException(
+                throw new DataException(
                     string.Format("TxtParser: cannot convert to int32 at Row({0}) and Column({1})", 
                         currentRow, columnIndex), e);
             }
@@ -163,7 +163,7 @@ namespace bookrpg.config
                 return Convert.ToUInt32(GetColumnValue(columnIndex));
             } catch (Exception e)
             {
-                throw new ConfigException(
+                throw new DataException(
                     string.Format("TxtParser: cannot convert to uint32 at Row({0}) and Column({1})", 
                         currentRow, columnIndex), e);
             }
@@ -181,7 +181,7 @@ namespace bookrpg.config
                 return Convert.ToDouble(GetColumnValue(columnIndex));
             } catch (Exception e)
             {
-                throw new ConfigException(
+                throw new DataException(
                     string.Format("TxtParser: cannot convert to double at Row({0}) and Column({1})", 
                         currentRow, columnIndex), e);
             }
@@ -209,7 +209,7 @@ namespace bookrpg.config
                 return Convert.ToInt64(GetColumnValue(columnIndex));
             } catch (Exception e)
             {
-                throw new ConfigException(
+                throw new DataException(
                     string.Format("TxtParser: cannot convert to long at Row({0}) and Column({1})", 
                         currentRow, columnIndex), e);
             }
@@ -248,7 +248,7 @@ namespace bookrpg.config
                 return ParseUtil.GetList<T>(GetColumnValue(columnIndex), arrayDelimiter);
             } catch (Exception e)
             {
-                throw new ConfigException(
+                throw new DataException(
                     string.Format("TxtParser: cannot convert to array at Row({0}) and Column({1})", 
                         currentRow, columnIndex), e);
             }
@@ -267,7 +267,7 @@ namespace bookrpg.config
                     arrayDelimiter, innerArrayDelimiter);
             } catch (Exception e)
             {
-                throw new ConfigException(
+                throw new DataException(
                     string.Format("TxtParser: cannot convert to array at Row({0}) and Column({1})", 
                         currentRow, columnIndex), e);
             }
@@ -278,7 +278,7 @@ namespace bookrpg.config
             var row = body [currentRow];
             if (columnIndex < 0 || columnIndex >= row.Length)
             {
-                throw new ConfigException(
+                throw new DataException(
                     string.Format("TxtParser: cannot read at Row({0}) and Column({1})", currentRow, columnIndex));
             }
             return row [columnIndex];

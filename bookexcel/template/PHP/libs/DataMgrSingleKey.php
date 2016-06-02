@@ -5,7 +5,7 @@
  * @license The MIT License
  */
 
-abstract class ConfigMgrSingleKey extends ConfigMgrBase
+abstract class DataMgrSingleKey extends DataMgrBase
 {
 
     public function init($text, $format = '')

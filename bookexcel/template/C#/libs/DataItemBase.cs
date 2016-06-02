@@ -7,18 +7,18 @@
 using System;
 using System.Collections;
 
-namespace bookrpg.config
+namespace bookrpg.data
 {
-    public abstract class ConfigItemBase
+    public abstract class DataItemBase
     {
         protected object _key1;
         protected object _key2;
 
-        public ConfigItemBase()
+        public DataItemBase()
         {
         }
 
-        public virtual bool ParseFrom(IConfigParser parser)
+        public virtual bool ParseFrom(IDataParser parser)
         {
             throw new NotImplementedException();
         }

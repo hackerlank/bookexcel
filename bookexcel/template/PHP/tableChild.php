@@ -12,7 +12,7 @@ require_once __DIR__ . '/{%:$className . $parentSuffix%}.php';
 {%$filename = $className; $override=false%}
 class {%$className%} extends {%:$className . $parentSuffix%} 
 {
-    public function parseFrom(\IConfigParser $parser)
+    public function parseFrom(\IDataParser $parser)
     {
         if(parent::parseFrom($parser))
         {

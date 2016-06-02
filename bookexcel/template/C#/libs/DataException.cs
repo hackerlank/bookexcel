@@ -7,15 +7,15 @@
 using System;
 using System.Collections;
 
-namespace bookrpg.config
+namespace bookrpg.data
 {
-    public class ConfigException : Exception
+    public class DataException : Exception
     {
-        public ConfigException(string message) : base(message)
+        public DataException(string message) : base(message)
         {
         }
         
-        public ConfigException(string message, Exception innerException) : base(message, innerException)
+        public DataException(string message, Exception innerException) : base(message, innerException)
         {
         }
         

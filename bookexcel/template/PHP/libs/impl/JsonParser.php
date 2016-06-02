@@ -5,7 +5,7 @@
  * @license The MIT License
  */
 
-class JsonParser implements IConfigParser
+class JsonParser implements IDataParser
 {
     private $body;
 
@@ -93,14 +93,14 @@ class JsonParser implements IConfigParser
     public function getList($column, $type)
     {
         if (!isset($this->body[$this->currentRow][$column])) {
-            throw new ConfigException(
+            throw new DataException(
                 sprintf("JsonParser: cannot read at row(%d) and column(%s)",
                     $this->currentRow, $column));
         }
 
         $val = $this->body[$this->currentRow][$column];
         if (!is_array($val) || (!empty($val) && !ParseUtil::isType($val[0], $type))) {
-            throw new ConfigException(
+            throw new DataException(
                 sprintf("JsonParser: cannot convert to %s[] at row(%d) and column(%s)",
                     $type, $this->currentRow, $column));
         }
@@ -111,14 +111,14 @@ class JsonParser implements IConfigParser
     public function getListGroup($column, $type)
     {
         if (!isset($this->body[$this->currentRow][$column])) {
-            throw new ConfigException(
+            throw new DataException(
                 sprintf("JsonParser: cannot read at row(%d) and column(%s)",
                     $this->currentRow, $column));
         }
 
         $val = $this->body[$this->currentRow][$column];
         if (!is_array($val) || (!isset($val[0][0]) && !ParseUtil::isType($val[0][0], $type))) {
-            throw new ConfigException(
+            throw new DataException(
                 sprintf("JsonParser: cannot convert to %s[][] at row(%d) and column(%s)",
                     $type, $this->currentRow, $column));
         }
@@ -131,7 +131,7 @@ class JsonParser implements IConfigParser
         $row = $this->body[$this->currentRow];
         
         if (!isset($row[$column])) {
-            throw new ConfigException(
+            throw new DataException(
                 sprintf("JsonParser: cannot read at row(%d) and column(%s)",
                     $this->currentRow, $column));
         }
@@ -139,7 +139,7 @@ class JsonParser implements IConfigParser
         $val = $row[$column];
 
         if (!ParseUtil::isType($val, $type)) {
-            throw new ConfigException(
+            throw new DataException(
                 sprintf("JsonParser: cannot convert to %s at row(%d) and column(%s)",
                     $type, $this->currentRow, $column));
         }

@@ -5,7 +5,7 @@
  * @license The MIT License
  */
 
-interface IConfigParser extends \Iterator
+interface IDataParser extends \Iterator
 {
     public function getCurrentRow();
 

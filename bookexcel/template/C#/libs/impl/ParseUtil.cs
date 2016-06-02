@@ -8,7 +8,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace bookrpg.config
+namespace bookrpg.data
 {
     public class ParseUtil
     {

@@ -8,7 +8,7 @@
 /**
  * Parse tab delimited string, much like csv
  */
-class TxtParser implements IConfigParser
+class TxtParser implements IDataParser
 {
     private $title;
     private $body;
@@ -128,7 +128,7 @@ class TxtParser implements IConfigParser
 
         $row = $this->body[$this->currentRow];
         if ($column < 0 || $column >= count($row)) {
-            throw new ConfigException(
+            throw new DataException(
                 sprintf("TxtParser: cannot read at row(%d) and column(%s)",
                     $this->currentRow, $column));
         }
@@ -136,7 +136,7 @@ class TxtParser implements IConfigParser
         $val = $row[$column];
 
         if (!ParseUtil::canConvert($val, $type)) {
-            throw new ConfigException(
+            throw new DataException(
                 sprintf("TxtParser: cannot convert to %s at row(%d) and column(%s)",
                     $type, $this->currentRow, $column));
         }

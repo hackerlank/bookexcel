@@ -9,12 +9,12 @@ using System.Collections;
 using System.Collections.Generic;
 using LitJson;
 
-namespace bookrpg.config
+namespace bookrpg.data
 {
     /// <summary>
     /// Parse json string
     /// </summary>
-    public class JsonParser : IConfigParser, ICollection, IEnumerable, IEnumerator
+    public class JsonParser : IDataParser, ICollection, IEnumerable, IEnumerator
     {
         public JsonData data;
 
@@ -37,7 +37,7 @@ namespace bookrpg.config
                 return true;
             } catch (Exception)
             {
-//                throw new ConfigException("JsonParser: json format error", e);
+//                throw new DataException("JsonParser: json format error", e);
                 return false;
             }
         }
@@ -73,7 +73,7 @@ namespace bookrpg.config
                 return (T)Convert.ChangeType(data[currentRow][columnName].ToString(), t);
             } catch (Exception e)
             {
-                throw new ConfigException(
+                throw new DataException(
                     string.Format("JsonParser: cannot convert to {0} at Row({1}) and Column({2})", 
                         typeof(T), currentRow, columnName), e);
             }
@@ -87,7 +87,7 @@ namespace bookrpg.config
                 return (T)Convert.ChangeType(data[currentRow][columnIndex].ToString(), t);
             } catch (Exception e)
             {
-                throw new ConfigException(
+                throw new DataException(
                     string.Format("JsonParser: cannot convert to {0} at Row({1}) and Column({2})", 
                         typeof(T), currentRow, columnIndex), e);
             }
@@ -178,7 +178,7 @@ namespace bookrpg.config
                 return tarr;
             } catch (Exception e)
             {
-                throw new ConfigException(
+                throw new DataException(
                     string.Format("JsonParser: cannot convert to {0} at Row({1}) and Column({2})", 
                         typeof(T), currentRow, columnName), e);
             }
@@ -199,7 +199,7 @@ namespace bookrpg.config
                 return tarr;
             } catch (Exception e)
             {
-                throw new ConfigException(
+                throw new DataException(
                     string.Format("JsonParser: cannot convert to {0} at Row({1}) and Column({2})", 
                         typeof(T), currentRow, columnIndex), e);
             }
@@ -226,7 +226,7 @@ namespace bookrpg.config
                 return tarr;
             } catch (Exception e)
             {
-                throw new ConfigException(
+                throw new DataException(
                     string.Format("JsonParser: cannot convert to {0} at Row({1}) and Column({2})", 
                         typeof(T), currentRow, columnName), e);
             }
@@ -253,7 +253,7 @@ namespace bookrpg.config
                 return tarr;
             } catch (Exception e)
             {
-                throw new ConfigException(
+                throw new DataException(
                     string.Format("JsonParser: cannot convert to {0} at Row({1}) and Column({2})", 
                         typeof(T), currentRow, columnIndex), e);
             }

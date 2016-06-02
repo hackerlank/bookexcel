@@ -5,14 +5,14 @@
  * @license The MIT License
  */
 
-include_once  __DIR__ . '/IConfigParser.php';
+include_once  __DIR__ . '/IDataParser.php';
 
-class ConfigItemBase
+class DataItemBase
 {
     protected $_key1;
     protected $_key2;
 
-    public function parseFrom(IConfigParser $parser)
+    public function parseFrom(IDataParser $parser)
     {
         throw new Exception('not implements', 1);
     }

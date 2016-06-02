@@ -30,7 +30,7 @@ class {%:$className.$parentSuffix%} extends \{%$parentClassName%}
     /**
      * parse form {%$fileFormat%} 
      */
-    public function parseFrom(\IConfigParser $parser)
+    public function parseFrom(\IDataParser $parser)
     {
         try{
             {% 
